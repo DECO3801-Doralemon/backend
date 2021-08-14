@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+
+env = environ.Env()
+env.read_env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ls^g*hwjik+y2f3d@4_x$9q88t*4m6hoy%1yshb#9#65jnkkl@'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -38,9 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
     'profile_feature',
-    'auth',
+    'auth_feature',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
 
@@ -133,5 +138,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
-    'DEFAULT_AUTHENTICATION_CLASSES': 'rest_framework.authentication.TokenAuthentication'
+    'DEFAULT_AUTHENTICATION_CLASSES': 'rest_framework_simplejwt.authentication.JWTAuthentication',
 }
