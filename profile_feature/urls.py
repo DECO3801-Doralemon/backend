@@ -1,8 +1,6 @@
 from django.urls import path
-from .views import changeBioForm
+from .views import Profile
 
 urlpatterns = [
-    path('', profile, name ='profile'),
-    path('changeBioForm', changeBioForm, name = 'changeBioForm'),
-    path('replaceBio', replaceBio, name='replaceBio'),
+    path('', Profile.as_view(), name = 'profile'),
 ]
