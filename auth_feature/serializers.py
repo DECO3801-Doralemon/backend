@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from profile_feature.models import Customer
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -11,8 +12,8 @@ class RegisterSerializer(serializers.Serializer):
     last_name = serializers.CharField(max_length=100)
     
     def create(self, validated_data):
-        
-        return User.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
+        return Customer.objects.create(user=user)
 
 
 class LoginSerializer(serializers.Serializer):

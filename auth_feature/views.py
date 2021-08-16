@@ -17,7 +17,7 @@ class RegisterView(APIView):
 
         if serializer.is_valid():
             try:
-                user = serializer.save()
+                serializer.save()
             except IntegrityError:
                 return JsonResponse(data={"error": "UsernameDuplicateError"}, status=400)
 
