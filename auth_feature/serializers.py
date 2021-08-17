@@ -10,7 +10,7 @@ class RegisterSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=100)
     first_name = serializers.CharField(max_length=100)
     last_name = serializers.CharField(max_length=100)
-    
+
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return Customer.objects.create(user=user)

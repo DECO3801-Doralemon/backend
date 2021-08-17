@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.CharField(max_length=100)
-    photo = models.ImageField(upload_to='profilePic')
+    bio = models.CharField(max_length=100, blank=True, null=True)
+    photo = models.ImageField(upload_to='profilePic', default='profilePic/GDR.PNG', blank=True, null=True)
 class AvoidedFood(models.Model):
     Customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     bio = models.CharField(max_length=100)
