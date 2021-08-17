@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.db import IntegrityError
 from rest_framework.views import APIView
 
-from .serializers import LoginSerializer, RegisterSerializer
+from .serializers import RegisterSerializer
 
 
 class RegisterView(APIView):
