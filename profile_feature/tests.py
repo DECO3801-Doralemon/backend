@@ -21,7 +21,7 @@ class ProfileUnitTest(TestCase):
 
     def testGet(self):
         response = self.client.get("/api/v1/profile/", header = {
-        'WWW-Authenticate': 'Bearer '+str(self.accessToken)
+        'Authorization': 'Bearer '+str(self.accessToken)
         })
         print("Access Token: "+str(self.accessToken))
 
@@ -36,7 +36,7 @@ class ProfileUnitTest(TestCase):
 
     def testPost(self):
         response = self.client.post("/api/v1/profile/", header = {
-        'WWW-Authenticate': 'Bearer '+str(self.accessToken),
+        'Authorization': 'Bearer '+str(self.accessToken),
         }, data = {
         'Username' : 'gibran',
         'Email' : 'gibran@gibran.gibran',
