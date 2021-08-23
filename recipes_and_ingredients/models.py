@@ -11,10 +11,8 @@ class Tags(models.Model):
 class Ingredient(models.Model):
     ingredientGTIN =  models.IntegerField(primary_key=True)
     ingredientName = models.CharField(max_length=100)
-    ingredientExpiryDate = models.DateField()
     ingredientType = models.CharField(choices=[('1','Meat, Seafood & Deli'),('2','Fruit & Veg'), ('3','Dairy, Eggs & Fridge'), ('4','Bakery'), ('5','Freezer'),('6','Pantry')],
     default = 'Meat, Seafood & Deli',max_length=50)
-    ingredientWeight = models.FloatField()
 # freezerWeight
 # pantryWeight
 # fridgeWeight
