@@ -8,7 +8,7 @@ from .serializers import EditSerializer
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from .models import AvoidedFood, WasteStat, Customer
+from .models import WasteStat, Customer
 
 response={}
 
