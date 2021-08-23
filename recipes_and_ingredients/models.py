@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import m2m_changed
 from django.core.exceptions import ValidationError
+from profile_feature.models import Customer
 
 # Create your models here.
 
