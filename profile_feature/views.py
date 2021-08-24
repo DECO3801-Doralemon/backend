@@ -4,7 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from .models import Customer
-from .serializers import EditSerializer
+from .serializers import EditSerializer, EditPasswordSerializer
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 
@@ -39,14 +39,14 @@ class Profile(APIView):
         return JsonResponse(serializer.errors, status=400)
 
 
-# class EditPassword(APIView):
-#     authentication_classes = [JWTAuthentication]
-#     permission_classes = [IsAuthenticated]
+class EditPassword(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
-#     def post(self, request, format=None):
-#         user = request.user
-#         serializer = EditPasswordSerializer(user, data=request.data)
-#         if serializer.is_valid():
-#             user = serializer.save()
-#             return HttpResponse(status=200)
-#         return JsonResponse(serializer.errors, status=400)
+    def post(self, request, format=None):
+        user = request.user
+        serializer = EditPasswordSerializer(user, data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return HttpResponse(status=200)
+        return JsonResponse(serializer.errors, status=400)
