@@ -1,10 +1,12 @@
-from django.test import TestCase
+from rest_framework.test import APITestCase
 from profile_feature.models import Customer
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 
 
-class ProfileUnitTest(TestCase):
+class ProfileUnitTest(APITestCase):
     customer = None
     accessToken = None
     user = None
@@ -18,34 +20,31 @@ class ProfileUnitTest(TestCase):
             last_name='Gibran'
         )
         self.accessToken = RefreshToken.for_user(self.user).access_token
+
         self.customer = Customer.objects.create(
-            user=self.user, bio='Test', photo='profilePic/GDR.PNG')
+            user=self.user, bio='Test')
 
-    def testGet(self):
-        response = self.client.get("/api/v1/profile/", header={
-            'Authorization': 'Bearer '+str(self.accessToken)
-        })
-        print("Access Token: "+str(self.accessToken))
+    def test_profile_get(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Bearer ' + str(self.accessToken))
+        response = self.client.get("/api/v1/profile/")
 
-        self.assertEqual(response.data, {
-            'First Name': 'Gibran',
-            'Last Name': 'Gibran',
-            'Username': 'gibran',
-            'Email': 'gibran@gibran.gibran',
-            'Biography': 'Test',
-            'Photo': 'profilePic/GDR.PNG',
-        })
+        self.assertEqual(response.content.decode(
+            "UTF-8"),
+            '{"First Name": "Gibran", "Last Name": "Gibran", "Username": "gibran", "Email": "gibran@gibran.gibran", "Biography": "Test", "Photo": "/profilePic/GDR.PNG"}')
 
-    def testPost(self):
-        response = self.client.post("/api/v1/profile/", header={
-            'Authorization': 'Bearer '+str(self.accessToken),
-        }, data={
-            'Username': 'gibran',
-            'Email': 'gibran@gibran.gibran',
-            'First Name': 'Gibran',
-            'Last Name': 'Gibran',
-            'Biography': 'Test',
-            'Photo': 'profilePic/GDR.PNG',
+    def test_profile_post(self):
+        photo = SimpleUploadedFile(name='test_photo.png',
+                                   content=open(settings.BASE_DIR / 'test_media/1.png', 'rb').read())
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Bearer ' + str(self.accessToken))
+        response = self.client.post("/api/v1/profile/", data={
+            'first_name': 'Gibran',
+            'last_name': 'Gibran',
+            'email': 'gibran@gibran.gibran',
+            'bio': 'Test',
+            'photo': photo,
         })
 
         self.assertEqual(response.status_code, 200)

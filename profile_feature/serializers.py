@@ -22,17 +22,17 @@ class EditSerializer(serializers.Serializer):
         return instance
 
 
-class EditPasswordSerializer(serializers.Serializer):
-    oldPassword = serializers.CharField(max_length=100)
-    password = serializers.CharField(max_length=100)
+# class EditPasswordSerializer(serializers.Serializer):
+#     oldPassword = serializers.CharField(max_length=100)
+#     password = serializers.CharField(max_length=100)
 
-    def update(self, instance, validated_data):
-        if user.check_password(oldPassword):
-            if user.check_password(password):
-                raise ValidationError("Password is the same as old password.")
-            else:
-                instance.set_password(password)
-                instance.save()
-                return instance
-        else:
-            raise ValidationError("Wrong password.")
+#     def update(self, instance, validated_data):
+#         if user.check_password(validated_data.oldPassword):
+#             if user.check_password(validated_data.password):
+#                 raise ValidationError("Password is the same as old password.")
+#             else:
+#                 instance.set_password(validated_data.password)
+#                 instance.save()
+#                 return instance
+#         else:
+#             raise ValidationError("Wrong password.")
