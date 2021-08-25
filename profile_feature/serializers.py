@@ -22,10 +22,18 @@ class EditSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+class ChangePasswordSerializer(serializers.Serializer):
+    model = User
 
+    """
+    Serializer for password change endpoint.
+    """
+    old_password = serializers.CharField(required=True, max_length=100)
+    new_password = serializers.CharField(required=True, max_length=100)
 class EditPasswordSerializer(serializers.Serializer):
     oldPassword = serializers.CharField(max_length=100)
     password = serializers.CharField(max_length=100)
+    model = User
 
     def update(self, instance, validated_data):
         if user.check_password(validated_data.oldPassword):
