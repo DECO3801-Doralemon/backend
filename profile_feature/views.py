@@ -1,4 +1,4 @@
-from rest_framework.views import APIView
+from rest_framework.views import APIView, UpdateAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
@@ -46,7 +46,7 @@ class EditPassword(UpdateAPIView):
         """
         An endpoint for changing password.
         """
-        serializer_class = ChangePasswordSerializer
+        serializer_class = EditPasswordSerializer
         model = User
         permission_classes = (IsAuthenticated,)
 
