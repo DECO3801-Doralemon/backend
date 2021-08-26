@@ -1,4 +1,4 @@
-from rest_framework.views import APIView, UpdateAPIView
+from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
@@ -42,36 +42,29 @@ class Profile(APIView):
 
 
 
-class EditPassword(UpdateAPIView):
-        """
-        An endpoint for changing password.
-        """
-        serializer_class = EditPasswordSerializer
-        model = User
-        permission_classes = (IsAuthenticated,)
+class EditPassword(APIView):
+    """
+    An endpoint for changing password.
+    """
+    authentication_classes = [JWTAuthentication]
+    permission_classes = (IsAuthenticated, )
 
-        def get_object(self, queryset=None):
-            obj = self.request.user
-            return obj
+    def get_object(self, queryset=None):
+        return self.request.user
 
-        def update(self, request, *args, **kwargs):
-            self.object = self.get_object()
-            serializer = self.get_serializer(data=request.data)
+    def put(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = EditPasswordSerializer(data=request.data)
 
-            if serializer.is_valid():
-                # Check old password
-                if not self.object.check_password(serializer.data.get("old_password")):
-                    return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
-                # set_password also hashes the password that the user will get
-                self.object.set_password(serializer.data.get("new_password"))
-                self.object.save()
-                response = {
-                    'status': 'success',
-                    'code': status.HTTP_200_OK,
-                    'message': 'Password updated successfully',
-                    'data': []
-                }
+        if serializer.is_valid():
+            # Check old password
+            old_password = serializer.data.get("old_password")
+            if not self.object.check_password(old_password):
+                return Response({"old_password": ["Wrong password."]},
+                                status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
-                return Response(response)
-
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
