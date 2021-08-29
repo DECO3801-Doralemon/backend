@@ -35,6 +35,7 @@ class Recipe(models.Model):
     def __str__(self) -> str:
         return f"{self.author.user.username}, {self.name}"
 
+
 def tags_changed(sender, **kwargs):
     if kwargs['instance'].tags.count() > 3:
         raise ValidationError("You can't assign more than three tags")

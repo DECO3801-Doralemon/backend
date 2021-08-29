@@ -1,10 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from profile_feature.models import Customer
 from .models import MealPlan
+from .serializers import MealPlannerSerializer
 
 
 class MealPlanner(APIView):
@@ -35,9 +35,9 @@ class MealPlanner(APIView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        # serializer = EditSerializer(customer, data=request.data)
-        # if serializer.is_valid():
-        #     customer = serializer.save()
-        #     return HttpResponse(status=200)
+        serializer = MealPlannerSerializer(customer, data=request.data)
+        if serializer.is_valid():
+            meal_plan = serializer.save()
+            return HttpResponse(status=200)
 
-        # return JsonResponse(serializer.errors, status=400)
+        return JsonResponse(serializer.errors, status=400)
