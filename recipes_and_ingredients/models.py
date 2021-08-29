@@ -22,13 +22,18 @@ class Ingredient(models.Model):
 # pantryWeight
 # fridgeWeight
 
+    def __str__(self) -> str:
+        return f"{self.ingredientGTIN} {self.ingredientName}"
+
 
 class Recipe(models.Model):
     author = models.ForeignKey(Customer, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     tags = models.ManyToManyField(Tags)
-    Ingredients = models.ManyToManyField(Ingredient)
+    needed_ingredients = models.ManyToManyField(Ingredient)
 
+    def __str__(self) -> str:
+        return f"{self.author.user.username}, {self.name}"
 
 def tags_changed(sender, **kwargs):
     if kwargs['instance'].tags.count() > 3:
