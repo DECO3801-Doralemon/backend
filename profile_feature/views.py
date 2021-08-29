@@ -1,16 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.models import User
 from .models import Customer
 from .serializers import EditSerializer, EditPasswordSerializer
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from rest_framework import status
-from rest_framework import generics
 from rest_framework.response import Response
 
-from .models import WasteStat, Customer
+from .models import Customer
 
 response = {}
 
