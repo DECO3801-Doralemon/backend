@@ -2,9 +2,11 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Customer
-from .serializers import EditSerializer
+from .serializers import EditSerializer, EditPasswordSerializer
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from rest_framework import status
+from rest_framework.response import Response
 
 from .models import Customer
 
@@ -38,13 +40,28 @@ class Profile(APIView):
 
 
 class EditPassword(APIView):
+    """
+    An endpoint for changing password.
+    """
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
 
-    def post(self, request, format=None):
-        user = request.user
-        serializer = EditPasswordSerializer(user, data=request.data)
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def put(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = EditPasswordSerializer(data=request.data)
+
         if serializer.is_valid():
-            user = serializer.save()
-            return HttpResponse(status=200)
-        return JsonResponse(serializer.errors, status=400)
+            # Check old password
+            old_password = serializer.data.get("old_password")
+            if not self.object.check_password(old_password):
+                return Response({"old_password": ["Wrong password."]},
+                                status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

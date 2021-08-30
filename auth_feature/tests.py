@@ -1,14 +1,14 @@
-from django.test import TestCase
+from rest_framework.test import APITestCase
 from profile_feature.models import Customer
 from django.contrib.auth.models import User
 
 
-class AuthUnitTest(TestCase):
+class AuthUnitTest(APITestCase):
 
     def test_register(self):
         response = self.client.post("/api/v1/auth/register", data={
             'username': 'gibran',
-            'password': 'gibran',
+            'password': 'gibrannn',
             'email': 'gibran@email.com',
             'first_name': 'Gibran',
             'last_name': 'Gibran',
