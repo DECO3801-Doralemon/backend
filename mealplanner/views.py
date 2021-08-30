@@ -26,6 +26,7 @@ class MealPlanner(APIView):
                 needed_ingredients.append(str(ing))
 
             meal_plans_list.append({
+                'recipe_name': meal_plan.recipe.name,
                 'ingredients': needed_ingredients,
             })
 
@@ -35,9 +36,15 @@ class MealPlanner(APIView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        serializer = MealPlannerSerializer(customer, data=request.data)
+        data = {
+            'recipe_id': int(request.POST.get('recipe_id')),
+            'date': str(request.POST.get('date')),
+            'customer_id': customer.id,
+        }
+
+        serializer = MealPlannerSerializer(data=data)
         if serializer.is_valid():
-            meal_plan = serializer.save()
+            serializer.save()
             return HttpResponse(status=200)
 
         return JsonResponse(serializer.errors, status=400)
