@@ -20,9 +20,13 @@ class Recipe(models.Model):
     author = models.ForeignKey(Customer, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     tags = models.ManyToManyField(Tags)
-    Ingredients = models.ManyToManyField(Ingredient)
+    RecipeIngredient = models.ManyToManyField(RecipeIngredient)
 
 def tags_changed(sender, **kwargs):
     if kwargs['instance'].tags.count() > 3:
         raise ValidationError("You can't assign more than three tags")
 m2m_changed.connect(tags_changed, sender=Recipe.tags.through)
+
+class RecipeIngredient(models.Model):
+    ingredientGTIN = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    weightUsedInRecipe= models.FloatField()
