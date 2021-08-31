@@ -26,6 +26,7 @@ class MealPlanner(APIView):
                 needed_ingredients.append(str(ing))
 
             meal_plans_list.append({
+                'meal_plan_id': meal_plan.id,
                 'recipe_name': meal_plan.recipe.name,
                 'ingredients': needed_ingredients,
             })
@@ -48,3 +49,13 @@ class MealPlanner(APIView):
             return HttpResponse(status=200)
 
         return JsonResponse(serializer.errors, status=400)
+
+    def delete(self, request, format=None):
+        try:
+            meal_plan_id = int(request.POST.get('meal_plan_id'))
+            MealPlan.objects.get(id=meal_plan_id).delete()
+
+            return HttpResponse(status=200)
+        except ValueError:
+            return JsonResponse({'error': "Invalid ID Value"}, status=400)
+        
