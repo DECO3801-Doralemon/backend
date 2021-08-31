@@ -27,4 +27,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/v1/auth/', include('auth_feature.urls')),
     path('api/v1/profile/', include('profile_feature.urls')),
+    path('api/v1/meal-planner/', include('mealplanner.urls')),
 ]

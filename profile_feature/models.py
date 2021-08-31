@@ -8,7 +8,11 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.CharField(max_length=100, blank=True, null=True)
     photo = models.ImageField(
-        upload_to='profile_photo', default='profile_photo/GDR.PNG', blank=True, null=True)
+    upload_to='profile_photo', default='profile_photo/GDR.PNG', blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+        
 
 
 class WasteStat(models.Model):

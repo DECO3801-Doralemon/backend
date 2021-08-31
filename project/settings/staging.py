@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'profile_feature',
     'auth_feature',
+    'mealplanner',
+    'recipes_and_ingredients',
     'rest_framework',
 ]
 

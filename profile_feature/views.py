@@ -39,7 +39,6 @@ class Profile(APIView):
         return JsonResponse(serializer.errors, status=400)
 
 
-
 class EditPassword(APIView):
     """
     An endpoint for changing password.

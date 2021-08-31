@@ -4,6 +4,7 @@ from profile_feature.models import Customer
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 
+
 class EditSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=100)
     last_name = serializers.CharField(max_length=100)
@@ -22,10 +23,8 @@ class EditSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
 class EditPasswordSerializer(serializers.Serializer):
-    """
-    Serializer for password change endpoint.
-    """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
