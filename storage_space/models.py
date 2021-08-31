@@ -3,8 +3,8 @@ from profile_feature.models import Customer
 from recipes_and_ingredients.models import Ingredient
 
 class StoredIngredient(models.Model):
-    ingredientGTIN = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    ingredientExpiryDate = models.DateField()
-    FreezerWeight = models.FloatField()
-    FridgeWeight = models.FloatField()
-    PantryWeight = models.FloatField()
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    expiry_date = models.DateField()
+    freezer_weight = models.FloatField()
+    fridge_weight = models.FloatField()
+    pantry_weight = models.FloatField()
