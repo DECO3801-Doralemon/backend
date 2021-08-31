@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'profile_feature',
     'auth_feature',
     'mealplanner',
+    'shopping',
     'recipes_and_ingredients',
     'rest_framework',
 ]

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'mealplanner',
     'recipes_and_ingredients',
     'storage_space',
+    'shopping',
     'rest_framework',
 ]
 
