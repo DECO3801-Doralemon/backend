@@ -6,7 +6,7 @@ from recipes_and_ingredients.models import Recipe
 
 class MealPlan(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.DO_NOTHING)
     date = models.DateField()
 
     def __str__(self) -> str:
