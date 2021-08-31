@@ -14,8 +14,8 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     ingredientGTIN = models.IntegerField(primary_key=True)
     ingredientName = models.CharField(max_length=100)
-    ingredientType = models.CharField(choices=[('1','Meat, Seafood & Deli'),('2','Fruit & Veg'), ('3','Dairy, Eggs & Fridge'), ('4','Bakery'), ('5','Freezer'),('6','Pantry')],
-    default = 'Meat, Seafood & Deli',max_length=50)
+    ingredientType = models.CharField(choices=[('1', 'Meat, Seafood & Deli'), ('2', 'Fruit & Veg'), ('3', 'Dairy, Eggs & Fridge'), ('4', 'Bakery'), ('5', 'Freezer'), ('6', 'Pantry')],
+                                      default='Meat, Seafood & Deli', max_length=50)
 # freezerWeight
 # pantryWeight
 # fridgeWeight
@@ -24,11 +24,16 @@ class Ingredient(models.Model):
         return f"{self.ingredientGTIN} {self.ingredientName}"
 
 
+class RecipeIngredient(models.Model):
+    ingredientGTIN = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    weightUsedInRecipe = models.FloatField()
+
+
 class Recipe(models.Model):
     author = models.ForeignKey(Customer, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     tags = models.ManyToManyField(Tag)
-    needed_ingredients = models.ManyToManyField(Ingredient)
+    recipe_ingredients = models.ManyToManyField(RecipeIngredient)
 
     def __str__(self) -> str:
         return f"{self.author.user.username}, {self.name}"
