@@ -19,6 +19,21 @@ class ShoppingView(APIView):
             for n in range(30):
                 yield start_date + timedelta(n)
 
+        def merge_ingredients(ingredients):
+            i = 0
+            j = 1
+            size = len(ingredients)
+            while i < size:
+                while j < size:
+                    if ingredients[i][0].gtin == ingredients[j][0].gtin:
+                        ingredients[i][1] += ingredients[j][1]
+                        ingredients.pop(j)
+                        size = len(ingredients)
+                    else:
+                        j += 1
+                i += 1
+                j = i + 1
+
         user = request.user
         customer = Customer.objects.get(user=user)
 
@@ -31,19 +46,7 @@ class ShoppingView(APIView):
                     ingredients.append(
                         [recipe_ingredient.ingredient, recipe_ingredient.weight_used])
 
-        i = 0
-        j = 1
-        size = len(ingredients)
-        while i < size - 1:
-            while j < size - 1:
-                if ingredients[i][0] == ingredients[j][0]:
-                    ingredients[i][1] += ingredients[j][1]
-                    ingredients.pop(j)
-                    size = len(ingredients)
-                else:
-                    j += 1
-            i += 1
-            j = i + 1
+        merge_ingredients(ingredients)
 
         needed_ingredients = []
         for (ingredient, weight_used) in ingredients:
