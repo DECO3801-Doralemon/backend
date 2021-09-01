@@ -10,8 +10,6 @@ from rest_framework.response import Response
 
 from .models import Customer
 
-response = {}
-
 
 class Profile(APIView):
     authentication_classes = [JWTAuthentication]
@@ -21,12 +19,12 @@ class Profile(APIView):
         user = request.user
         customer = Customer.objects.get(user=user)
         return JsonResponse({
-            'First Name': customer.user.first_name,
-            'Last Name': customer.user.last_name,
-            'Username': customer.user.username,
-            'Email': customer.user.email,
-            'Biography': customer.bio,
-            'Photo': customer.photo.url,
+            'first_name': customer.user.first_name,
+            'last_name': customer.user.last_name,
+            'username': customer.user.username,
+            'email': customer.user.email,
+            'biography': customer.bio,
+            'photo_url': customer.photo.url,
         })
 
     def post(self, request, format=None):
