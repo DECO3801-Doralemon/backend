@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'auth_feature',
     'mealplanner',
     'shopping',
+    'storage_space',
     'recipes_and_ingredients',
     'rest_framework',
 ]
