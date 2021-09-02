@@ -31,7 +31,7 @@ class ProfileUnitTest(APITestCase):
 
         self.assertEqual(response.content.decode(
             "UTF-8"),
-            '{"First Name": "Gibran", "Last Name": "Gibran", "Username": "gibran", "Email": "gibran@gibran.gibran", "Biography": "Test", "Photo": "/profile_photo/test_photo.PNG"}')
+            '{"first_name": "Gibran", "last_name": "Gibran", "username": "gibran", "email": "gibran@gibran.gibran", "biography": "Test", "photo_url": "/profile_photo/test_photo.PNG"}')
 
     def test_profile_post(self):
         photo = SimpleUploadedFile(name='test_photo.png',
