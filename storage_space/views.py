@@ -2,6 +2,31 @@ from django.shortcuts import render
 
 # Create your views here.
 
+class Profile(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        user = request.user
+        customer = Customer.objects.get(user=user)
+        return JsonResponse({
+            'First Name': customer.user.first_name,
+            'Last Name': customer.user.last_name,
+            'Username': customer.user.username,
+            'Email': customer.user.email,
+            'Biography': customer.bio,
+            'Photo': customer.photo.url,
+        })
+
+    def post(self, request, format=None):
+        user = request.user
+        customer = Customer.objects.get(user=user)
+        serializer = EditSerializer(customer, data=request.data)
+        if serializer.is_valid():
+            customer = serializer.save()
+            return HttpResponse(status=200)
+        return JsonResponse(serializer.errors, status=400)
+
 def dataMatrixDecoder(dataMatrix):
     dataMatrix = dataMatrix
     gs1list = [ #reminder to self add the name
@@ -30,31 +55,33 @@ def dataMatrixDecoder(dataMatrix):
         head = dataMatrix[:4]
         length = search(gs1list, head[:2])
         if length != None:
-            print(length[3])
             dataMatrix = dataMatrix[2:]
             if head[:2] == '11' or head[:2] == '13' or head[:2] == '15' or head[:2] == '17':
+                print(length[3])
                 result = ''
                 for i in range(length[1]):
                     if not dataMatrix or dataMatrix[0] == '':
                         dataMatrix = dataMatrix[1:]
-                        finalResult.append(length[3]+': '+result)
+                        finalResult.append((int(length[0]),result))
                         break
                     result = result + dataMatrix[0]
                     dataMatrix = dataMatrix[1:]
-                finalResult.append(length[3]+': '+result[:2]+'-'+result[2:4]+'-'+result[4:])
+                finalResult.append((int(length[0]),result[:2]+'-'+result[2:4]+'-'+result[4:]))
             else:
+                print(length[3])
                 result = ''
                 for i in range(length[1]):
                     if not dataMatrix or dataMatrix[0] == '':
-                        finalResult.append(length[3]+': '+result)
+                        finalResult.append((int(length[0]),result))
                         break
                     result = result + dataMatrix[0]
                     dataMatrix = dataMatrix[1:]
+                finalResult.append((int(length[0]),result))
             continue
         length = search(gs1list, head[:3])
         if length != None:
-            print(length[3])
             if length[2]:
+                print(length[3])
                 dataMatrix = dataMatrix[3:]
                 decimalPoints = length[1]-int(dataMatrix[0])
                 dataMatrix = dataMatrix[1:]
@@ -63,13 +90,14 @@ def dataMatrixDecoder(dataMatrix):
                     if not dataMatrix or dataMatrix[0] == '':
                         dataMatrix = dataMatrix[1:]
                         result = result[:decimalPoints]+','+result[decimalPoints:]
-                        finalResult.append(length[3]+': '+result)
+                        finalResult.append((int(length[0]),result))
                         break
                     else:
                         result = result + dataMatrix[0]
                         dataMatrix = dataMatrix[1:]
                 continue
             elif dataMatrix[0] == '3':
+                print(length[3])
                 dataMatrix = dataMatrix[3:]
                 decimalPoints = 6-int(dataMatrix[0])
                 dataMatrix = dataMatrix[1:]
@@ -78,16 +106,17 @@ def dataMatrixDecoder(dataMatrix):
                     result = result + dataMatrix[0]
                     dataMatrix = dataMatrix[1:]
                 result = result[:decimalPoints]+','+result[decimalPoints:]
-                finalResult.append(length[3]+': '+result)
+                finalResult.append((int(length[0]),result))
                 continue
             else:
+                print(length[3])
                 dataMatrix = dataMatrix[3:]
                 result = ''
                 for i in range(length[1]):
                     result = result + dataMatrix[0]
                     dataMatrix = dataMatrix[1:]
                 result = result[:decimalPoints]+','+result[decimalPoints:]
-                finalResult.append(length[3]+': '+result)
+                finalResult.append((int(length[0]),result))
                 continue
         length = search(gs1list, head[:4])
         if length != None:
@@ -96,7 +125,7 @@ def dataMatrixDecoder(dataMatrix):
             for i in range(length[1]):
                 result = result + dataMatrix[0]
                 dataMatrix = dataMatrix[1:]
-            finalResult.append(length[3]+': '+result[:2]+'-'+result[2:4]+'-'+result[4:6]+' '+result[6:])
+            finalResult.append((int(length[0]),result[:2]+'-'+result[2:4]+'-'+result[4:6]+' '+result[6:]))
             continue
         if length == None:
             print('______________________________')
