@@ -37,7 +37,7 @@ class StorageView(APIView):
             response.append({
                 'gtin': ing.ingredient.gtin,
                 'name': ing.ingredient.name,
-                'expiry_countdown': date.today() - ing.expiry_date,
+                'expiry_countdown': abs(date.today() - ing.expiry_date).days,
                 'kg': ing.kg,
             })
 
