@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import StorageView
+from .views import FreezerStorageView, FridgeStorageView, PantryStorageView
 
 urlpatterns = [
-    path('', StorageView.as_view(), name = 'storage'),
+    path('freezer', FreezerStorageView.as_view(), name = 'storage-freezer'),
+    path('fridge', FridgeStorageView.as_view(), name = 'storage-fridge'),
+    path('pantry', PantryStorageView.as_view(), name = 'storage-pantry'),
 ]

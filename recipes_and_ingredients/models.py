@@ -21,7 +21,7 @@ class Ingredient(models.Model):
 
 class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    weight_used = models.FloatField()
+    kg_used = models.FloatField()
 
     def __str__(self) -> str:
         return f"{self.ingredient}, {self.weight_used}"

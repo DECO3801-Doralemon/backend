@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import *
 
 class RecipeIngredientAdmin(admin.ModelAdmin):
-    list_display = ('ingredient', 'weight_used')
+    list_display = ('ingredient', 'kg_used')
     search_fields = ('ingredient',)
     
 
