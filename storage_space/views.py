@@ -7,7 +7,7 @@ from datetime import date
 from profile_feature.models import Customer
 from recipes_and_ingredients.models import Ingredient
 from .models import StoredIngredientInFreezer, StoredIngredientInFridge, StoredIngredientInPantry
-from .serializers import CreateStorageSerializer, EditStorageSerializer, GTINSerializer
+from .serializers import EditStorageSerializer
 from .data_matrix_decoder import DataMatrixDecoder
 
 
@@ -21,8 +21,7 @@ class StorageView(APIView):
 
         data_matrix_decoder = DataMatrixDecoder()
 
-        serializer = CreateStorageSerializer(request.data_matrix)
-        results = data_matrix_decoder.decode(serializer.data_matrix)
+        results = data_matrix_decoder.decode(request.data['data_matrix'])
         gtin = results['01']
         expiry_date = results['15']
         kg = results['310']

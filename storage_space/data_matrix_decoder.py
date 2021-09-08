@@ -1,5 +1,5 @@
 class DataMatrixDecoder:
-    def decode(dataMatrix):
+    def decode(self, dataMatrix):
         def search(list, term):
             for i in range(len(list)):
                 if(list[i][0] == term):
