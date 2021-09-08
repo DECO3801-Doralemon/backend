@@ -38,8 +38,15 @@ def StoredIngredientView(APIView):
         gtin = results['01']
         expiry_date = results['15']
         ingredient = Ingredient.objects.get(gtin=gtin)
-        freezer_weight =
-        fridge_weight =
-        pantry_weight = 
-
-        return StoredIngredient.objects.create(customer=customer, ingredient = ingredient)
+        freezer_weight = 0
+        fridge_weight = 0
+        pantry_weight = 0
+        loc = serializer.validate_stored_in
+        validatedWeight = serializer.validate_weight
+        if loc == "pantry":
+            pantry_weight = validatedWeight
+        elif loc == "freezer":
+            freezer_weight = validatedWeight
+        elif loc == "fridge":
+            fridge_weight = validatedWeight
+        return StoredIngredient.objects.create(customer=customer, ingredient = ingredient, pantry_weight = pantry_weight, freezer_weight = freezer_weight, fridge_weight = fridge_weight)
