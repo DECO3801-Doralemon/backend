@@ -48,7 +48,6 @@ class StorageView(APIView):
         gtin = results['01']
         expiry_date = results['15']
         ingredient = Ingredient.objects.get(gtin=gtin)
-<<<<<<< HEAD
         freezer_weight = 0
         fridge_weight = 0
         pantry_weight = 0
@@ -61,10 +60,3 @@ class StorageView(APIView):
         elif loc == "fridge":
             fridge_weight = validatedWeight
         return StoredIngredient.objects.create(customer=customer, ingredient = ingredient, pantry_weight = pantry_weight, freezer_weight = freezer_weight, fridge_weight = fridge_weight)
-=======
-        # freezer_weight =
-        # fridge_weight =
-        # pantry_weight =
-
-        return StoredIngredient.objects.create(customer=customer, ingredient=ingredient)
->>>>>>> 2b326832b9f86ab08429a9ef3153bf012602b172
