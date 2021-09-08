@@ -15,13 +15,20 @@ class StorageView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, format=None):
+        user = request.user
+        customer = Customer.objects.get(user=user)
+
+
+
     def put(self, request, format=None):
         user = request.user
         customer = Customer.objects.get(user=user)
         try:
             ingredient = Ingredient.objects.get(gtin=request.data['gtin'])
-        except ObjectDoesNotExist:
-            return JsonResponse({"gtin": "Invalid GTIN"}, status=400)
+        except:
+            return JsonResponse({"gtin": "Invalid GTIN or ingredient does not exist"}, status=400)
+
 
         try:
             stored_ingredient = StoredIngredient.objects.get(
