@@ -11,7 +11,7 @@ from .data_matrix_decoder import DataMatrixDecoder
 from django.core.exceptions import ObjectDoesNotExist
 
 
-class StorageView(APIView):
+class FreezerStorageView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -48,15 +48,82 @@ class StorageView(APIView):
         gtin = results['01']
         expiry_date = results['15']
         ingredient = Ingredient.objects.get(gtin=gtin)
-        freezer_weight = 0
-        fridge_weight = 0
-        pantry_weight = 0
-        loc = serializer.validate_stored_in
-        validatedWeight = serializer.validate_weight
-        if loc == "pantry":
-            pantry_weight = validatedWeight
-        elif loc == "freezer":
-            freezer_weight = validatedWeight
-        elif loc == "fridge":
-            fridge_weight = validatedWeight
-        return StoredIngredient.objects.create(customer=customer, ingredient = ingredient, pantry_weight = pantry_weight, freezer_weight = freezer_weight, fridge_weight = fridge_weight)
+        return StoredIngredient.objects.create(customer=customer, ingredient = ingredient,  freezer_weight = serializer.validate_kg)
+
+class FridgeStorageView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, format=None):
+        user = request.user
+        customer = Customer.objects.get(user=user)
+        try:
+            ingredient = Ingredient.objects.get(gtin=request.data['gtin'])
+        except ObjectDoesNotExist:
+            return JsonResponse({"gtin": "Invalid GTIN"}, status=400)
+
+        try:
+            stored_ingredient = StoredIngredient.objects.get(
+                customer=customer, ingredient=ingredient)
+        except ObjectDoesNotExist:
+            return JsonResponse({"stored_ingredient": "Stored Ingredient not found."}, status=400)
+
+        serializer = EditStoredIngredientSerializer(
+            stored_ingredient, request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return HttpResponse(status=200)
+
+        return JsonResponse(serializer.errors, status=400)
+
+    def post(self, request, format=None):
+        user = request.user
+        customer = Customer.objects.get(user=user)
+
+        data_matrix_decoder = DataMatrixDecoder()
+
+        serializer = NewStoredIngredientSerializer(request.data_matrix)
+        results = data_matrix_decoder.decode(serializer.data_matrix)
+        gtin = results['01']
+        expiry_date = results['15']
+        ingredient = Ingredient.objects.get(gtin=gtin)
+        return StoredIngredient.objects.create(customer=customer, ingredient = ingredient, fridge_weight = serializer.validate_kg)
+
+class PantryStorageView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, format=None):
+        user = request.user
+        customer = Customer.objects.get(user=user)
+        try:
+            ingredient = Ingredient.objects.get(gtin=request.data['gtin'])
+        except ObjectDoesNotExist:
+            return JsonResponse({"gtin": "Invalid GTIN"}, status=400)
+
+        try:
+            stored_ingredient = StoredIngredient.objects.get(
+                customer=customer, ingredient=ingredient)
+        except ObjectDoesNotExist:
+            return JsonResponse({"stored_ingredient": "Stored Ingredient not found."}, status=400)
+
+        serializer = EditStoredIngredientSerializer(
+            stored_ingredient, request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return HttpResponse(status=200)
+
+        return JsonResponse(serializer.errors, status=400)
+
+    def post(self, request, format=None):
+        user = request.user
+        customer = Customer.objects.get(user=user)
+
+        data_matrix_decoder = DataMatrixDecoder()
+
+        serializer = NewStoredIngredientSerializer(request.data_matrix)
+        results = data_matrix_decoder.decode(serializer.data_matrix)
+        gtin = results['01']
+        expiry_date = results['15']
+        ingredient = Ingredient.objects.get(gtin=gtin)
+        return StoredIngredient.objects.create(customer=customer, ingredient = ingredient, pantry_weight = serializer.validate_kg)
