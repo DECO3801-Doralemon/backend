@@ -1,14 +1,3 @@
-from django.http.response import HttpResponse, JsonResponse
-from recipes_and_ingredients.models import Ingredient
-from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
-from profile_feature.models import Customer
-from recipes_and_ingredients.models import Ingredient
-from .models import StoredIngredient
-from .serializers import StoredIngredientSerializer
-
-
 class DataMatrixDecoder:
     def decode(dataMatrix):
         def search(list, term):

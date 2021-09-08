@@ -29,4 +29,5 @@ urlpatterns = [
     path('api/v1/profile/', include('profile_feature.urls')),
     path('api/v1/meal-planner/', include('mealplanner.urls')),
     path('api/v1/shopping/', include('shopping.urls')),
+    path('api/v1/storage/', include('storage_space.urls')),
 ]

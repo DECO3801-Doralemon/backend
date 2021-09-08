@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from .models import Customer
 
 
-class Profile(APIView):
+class ProfileView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -37,7 +37,7 @@ class Profile(APIView):
         return JsonResponse(serializer.errors, status=400)
 
 
-class EditPassword(APIView):
+class EditPasswordView(APIView):
     """
     An endpoint for changing password.
     """
