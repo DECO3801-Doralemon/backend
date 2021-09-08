@@ -1,18 +1,14 @@
 from rest_framework import serializers
-from recipes_and_ingredients.models import Ingredient
-from profile_feature.models import Customer
-from dataMatrixDecoder import DataMatrixDecoder
-from storage_space.models import StoredIngredient
 
 
 class NewStoredIngredientSerializer(serializers.Serializer):
-    dataMatrix = models.CharField(max_length=100)
+    dataMatrix = serializers.CharField(max_length=100)
     weight = serializers.IntegerField()
-    stored_in = serializers.ChoiceField( #implement using this like the data matrix in views, try to use the below code for help
+    stored_in = serializers.ChoiceField(  # implement using this like the data matrix in views, try to use the below code for help
         choices=("pantry", "freezer", "fridge"))
 
 
-class StoredIngredientSerializer(serializers.Serializer):
+class EditStoredIngredientSerializer(serializers.Serializer):
     expired_date = serializers.DateField()
     weight = serializers.IntegerField()
     stored_in = serializers.ChoiceField(
