@@ -7,10 +7,10 @@ from profile_feature.models import Customer
 from recipes_and_ingredients.models import Ingredient
 from .models import StoredIngredient
 from .serializers import StoredIngredientSerializer, NewStoredIngredientSerializer
-from dataMatrixDecoder import DataMatrixDecoder
+from data_matrix_decoder import DataMatrixDecoder
 
 
-def StoredIngredientView(APIView):
+class StoredIngredientView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -22,14 +22,15 @@ def StoredIngredientView(APIView):
         stored_ingredient = StoredIngredient.objects.get(
             customer=customer, ingredient=ingredient)
 
-        serializer = StoredIngredientSerializer(stored_ingredient, request.data)
+        serializer = StoredIngredientSerializer(
+            stored_ingredient, request.data)
         if serializer.is_valid():
             serializer.save()
             return HttpResponse(status=200)
 
         return JsonResponse(serializer.errors, status=400)
 
-    def post(self, request, format = None):
+    def post(self, request, format=None):
         serializer = NewStoredIngredientSerializer(request.dataMatrix)
         user = request.user
         customer = Customer.objects.get(user=user)
@@ -40,6 +41,6 @@ def StoredIngredientView(APIView):
         ingredient = Ingredient.objects.get(gtin=gtin)
         freezer_weight =
         fridge_weight =
-        pantry_weight = 
+        pantry_weight =
 
-        return StoredIngredient.objects.create(customer=customer, ingredient = ingredient)
+        return StoredIngredient.objects.create(customer=customer, ingredient=ingredient)
