@@ -50,9 +50,9 @@ class FreezerStorageView(StorageView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        stored_ingredients = StoredIngredientInFreezer.objects.filter(customer=customer)
+        stored_ingredients = StoredIngredientInFreezer.objects.filter(
+            customer=customer)
         return self.stored_ingredient_to_json_response(stored_ingredients)
-        
 
     def put(self, request, format=None):
         user = request.user
@@ -80,7 +80,8 @@ class FridgeStorageView(StorageView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        stored_ingredients = StoredIngredientInFreezer.objects.filter(customer=customer)
+        stored_ingredients = StoredIngredientInFreezer.objects.filter(
+            customer=customer)
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
@@ -109,7 +110,8 @@ class PantryStorageView(StorageView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        stored_ingredients = StoredIngredientInFreezer.objects.filter(customer=customer)
+        stored_ingredients = StoredIngredientInFreezer.objects.filter(
+            customer=customer)
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
