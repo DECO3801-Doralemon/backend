@@ -12,8 +12,8 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('gtin', 'name', 'type')
-    search_fields = ('gtin', 'name', 'type')
+    list_display = ('gtin', 'name')
+    search_fields = ('gtin', 'name')
 
 
 admin.site.register(Tag)

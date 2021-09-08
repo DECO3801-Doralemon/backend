@@ -3,7 +3,8 @@ from .models import *
 
 
 class StoredIngredientAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'ingredient', 'expiry_date', 'freezer_weight', 'fridge_weight', 'pantry_weight')
+    list_display = ('customer', 'ingredient', 'expiry_date',
+                    'kg_in_freezer', 'kg_in_fridge', 'kg_in_pantry')
     search_fields = ('customer', 'ingredient',)
 
 

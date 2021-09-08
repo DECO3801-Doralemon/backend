@@ -6,38 +6,49 @@ from rest_framework.permissions import IsAuthenticated
 from profile_feature.models import Customer
 from recipes_and_ingredients.models import Ingredient
 from .models import StoredIngredient
-from .serializers import StoredIngredientSerializer, NewStoredIngredientSerializer
-from dataMatrixDecoder import DataMatrixDecoder
+from .serializers import EditStoredIngredientSerializer, NewStoredIngredientSerializer
+from .data_matrix_decoder import DataMatrixDecoder
+from django.core.exceptions import ObjectDoesNotExist
 
 
-def StoredIngredientView(APIView):
+class StorageView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def put(self, request, format=None):
         user = request.user
         customer = Customer.objects.get(user=user)
-        ingredient = Ingredient.objects.get(gtin=request.gtin)
+        try:
+            ingredient = Ingredient.objects.get(gtin=request.data['gtin'])
+        except ObjectDoesNotExist:
+            return JsonResponse({"gtin": "Invalid GTIN"}, status=400)
 
-        stored_ingredient = StoredIngredient.objects.get(
-            customer=customer, ingredient=ingredient)
+        try:
+            stored_ingredient = StoredIngredient.objects.get(
+                customer=customer, ingredient=ingredient)
+        except ObjectDoesNotExist:
+            return JsonResponse({"stored_ingredient": "Stored Ingredient not found."}, status=400)
 
-        serializer = StoredIngredientSerializer(stored_ingredient, request.data)
+        serializer = EditStoredIngredientSerializer(
+            stored_ingredient, request.data)
         if serializer.is_valid():
             serializer.save()
             return HttpResponse(status=200)
 
         return JsonResponse(serializer.errors, status=400)
 
-    def post(self, request, format = None):
-        serializer = NewStoredIngredientSerializer(request.dataMatrix)
+    def post(self, request, format=None):
         user = request.user
         customer = Customer.objects.get(user=user)
-        dataMatrixDecoder = DataMatrixDecoder()
-        results = dataMatrixDecoder.decode(serializer.validate_dataMatrix)
+
+        data_matrix_decoder = DataMatrixDecoder()
+
+        serializer = NewStoredIngredientSerializer(request.data_matrix)
+        results = data_matrix_decoder.decode(serializer.data_matrix)
         gtin = results['01']
         expiry_date = results['15']
         ingredient = Ingredient.objects.get(gtin=gtin)
+<<<<<<< HEAD
         freezer_weight = 0
         fridge_weight = 0
         pantry_weight = 0
@@ -50,3 +61,10 @@ def StoredIngredientView(APIView):
         elif loc == "fridge":
             fridge_weight = validatedWeight
         return StoredIngredient.objects.create(customer=customer, ingredient = ingredient, pantry_weight = pantry_weight, freezer_weight = freezer_weight, fridge_weight = fridge_weight)
+=======
+        # freezer_weight =
+        # fridge_weight =
+        # pantry_weight =
+
+        return StoredIngredient.objects.create(customer=customer, ingredient=ingredient)
+>>>>>>> 2b326832b9f86ab08429a9ef3153bf012602b172
