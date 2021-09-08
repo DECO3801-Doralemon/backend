@@ -14,16 +14,14 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     gtin = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
-    type = models.CharField(choices=[('1', 'Meat, Seafood & Deli'), ('2', 'Fruit & Veg'), ('3', 'Dairy, Eggs & Fridge'), ('4', 'Bakery'), ('5', 'Freezer'), ('6', 'Pantry')],
-                                       default='Meat, Seafood & Deli', max_length=50)
 
     def __str__(self) -> str:
-        return f"{self.name} {self.type}"
+        return f"{self.gtin} {self.name}"
 
 
 class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    weight_used = models.FloatField()
+    kg_used = models.FloatField()
 
     def __str__(self) -> str:
         return f"{self.ingredient}, {self.weight_used}"

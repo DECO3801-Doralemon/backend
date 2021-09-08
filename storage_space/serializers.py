@@ -11,20 +11,20 @@ class EditStorageSerializer(serializers.Serializer):
 
 class EditFreezerStorageSerializer(EditStorageSerializer):
     def update(self, instance, validated_data):
-        instance.kg_in_freezer = validated_data['kg']
+        instance.kg = validated_data['kg']
         instance.save()
         return instance
 
 
 class EditFridgeStorageSerializer(EditStorageSerializer):
     def update(self, instance, validated_data):
-        instance.kg_in_fridge = validated_data['kg']
+        instance.kg = validated_data['kg']
         instance.save()
         return instance
 
 
 class EditPantryStorageSerializer(EditStorageSerializer):
     def update(self, instance, validated_data):
-        instance.kg_in_pantry = validated_data['kg']
+        instance.kg = validated_data['kg']
         instance.save()
         return instance
