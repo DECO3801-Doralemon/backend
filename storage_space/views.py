@@ -64,7 +64,8 @@ class FreezerStorageView(StorageView):
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        stored_ingredient = StoredIngredientInFreezer.objects.get(id=request.data['id'])
+        stored_ingredient = StoredIngredientInFreezer.objects.get(
+            id=request.data['id'])
 
         return self.save_put_data(stored_ingredient, request.data)
 
@@ -88,7 +89,8 @@ class FridgeStorageView(StorageView):
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        stored_ingredient = StoredIngredientInFridge.objects.get(id=request.data['id'])
+        stored_ingredient = StoredIngredientInFridge.objects.get(
+            id=request.data['id'])
 
         return self.save_put_data(stored_ingredient, request.data)
 
@@ -112,7 +114,8 @@ class PantryStorageView(StorageView):
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        stored_ingredient = StoredIngredientInPantry.objects.get(id=request.data['id'])
+        stored_ingredient = StoredIngredientInPantry.objects.get(
+            id=request.data['id'])
 
         return self.save_put_data(stored_ingredient, request.data)
 
