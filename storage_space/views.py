@@ -24,7 +24,7 @@ class StorageView(APIView):
         results = data_matrix_decoder.decode(request.data['data_matrix'])
         gtin = results['01']
         expiry_date = results['15']
-        kg = results['310']
+        kg = float(results['310'])
 
         ingredient = Ingredient.objects.get(gtin=gtin)
 
@@ -74,7 +74,9 @@ class FreezerStorageView(StorageView):
 
     def post(self, request, format=None):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
-        return StoredIngredientInFreezer.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+        StoredIngredientInFreezer.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+
+        return HttpResponse(status=201)
 
     def delete(self, request, format=None):
         StoredIngredientInFreezer.objects.get(id=request.data['id']).delete()
@@ -102,7 +104,9 @@ class FridgeStorageView(StorageView):
 
     def post(self, request, format=None):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
-        return StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+        StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+
+        return HttpResponse(status=201)
 
     def delete(self, request, format=None):
         StoredIngredientInFridge.objects.get(id=request.data['id']).delete()
@@ -130,7 +134,9 @@ class PantryStorageView(StorageView):
 
     def post(self, request, format=None):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
-        return StoredIngredientInPantry.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+        StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+
+        return HttpResponse(status=201)
 
     def delete(self, request, format=None):
         StoredIngredientInPantry.objects.get(id=request.data['id']).delete()

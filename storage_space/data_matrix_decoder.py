@@ -45,7 +45,7 @@ class DataMatrixDecoder:
                             break
                         result = result + dataMatrix[0]
                         dataMatrix = dataMatrix[1:]
-                    finalResult[length[0]] = result[:2]+'-'+result[2:4]+'-'+result[4:]
+                    finalResult[length[0]] = '20'+result[:2]+'-'+result[2:4]+'-'+result[4:]
                 else:
                     print(length[3])
                     result = ''
@@ -69,7 +69,7 @@ class DataMatrixDecoder:
                         if not dataMatrix or dataMatrix[0] == '':
                             dataMatrix = dataMatrix[1:]
                             result = result[:decimalPoints] + \
-                                ','+result[decimalPoints:]
+                                '.'+result[decimalPoints:]
                             finalResult[length[0]] = result
                             break
                         else:
@@ -85,7 +85,7 @@ class DataMatrixDecoder:
                     for i in range(length[1]):
                         result = result + dataMatrix[0]
                         dataMatrix = dataMatrix[1:]
-                    result = result[:decimalPoints]+','+result[decimalPoints:]
+                    result = result[:decimalPoints]+'.'+result[decimalPoints:]
                     finalResult[length[0]] = result
                     continue
                 else:
@@ -95,7 +95,7 @@ class DataMatrixDecoder:
                     for i in range(length[1]):
                         result = result + dataMatrix[0]
                         dataMatrix = dataMatrix[1:]
-                    result = result[:decimalPoints]+','+result[decimalPoints:]
+                    result = result[:decimalPoints]+'.'+result[decimalPoints:]
                     finalResult[length[0]] = result
                     continue
             length = search(gs1list, head[:4])
