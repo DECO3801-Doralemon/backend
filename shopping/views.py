@@ -55,8 +55,12 @@ class ShoppingView(APIView):
             try:
                 kg_stored_in_freezer = StoredIngredientInFreezer.objects.get(
                     customer=customer, ingredient=ingredient).kg
+            except: None
+            try:
                 kg_stored_in_fridge = StoredIngredientInFridge.objects.get(
                     customer=customer, ingredient=ingredient).kg
+            except: None
+            try:
                 kg_stored_in_pantry = StoredIngredientInPantry.objects.get(
                     customer=customer, ingredient=ingredient).kg
             except:

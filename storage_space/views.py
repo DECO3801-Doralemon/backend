@@ -96,7 +96,7 @@ class FridgeStorageView(StorageView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        stored_ingredients = StoredIngredientInFreezer.objects.filter(
+        stored_ingredients = StoredIngredientInFridge.objects.filter(
             customer=customer)
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
@@ -128,7 +128,7 @@ class PantryStorageView(StorageView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        stored_ingredients = StoredIngredientInFreezer.objects.filter(
+        stored_ingredients = StoredIngredientInPantry.objects.filter(
             customer=customer)
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
@@ -143,7 +143,7 @@ class PantryStorageView(StorageView):
 
     def post(self, request, format=None):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
-        return StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+        return StoredIngredientInPantry.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
 
     def delete(self, request, format=None):
         customer, ingredient = self.get_customer_ingredient(
