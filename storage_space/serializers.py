@@ -1,12 +1,5 @@
 from rest_framework import serializers
 
-# class CreateStorageSerializer(serializers.Serializer):
-#     data_matrix = serializers.CharField(max_length=100)
-
-
-# class GTINSerializer(serializers.Serializer):
-#     gtin = serializers.CharField(max_length=100)
-
 
 class EditStorageSerializer(serializers.Serializer):
     kg = serializers.IntegerField(min_value=0)

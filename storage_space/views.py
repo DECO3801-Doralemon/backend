@@ -34,6 +34,7 @@ class StorageView(APIView):
         response = []
         for ing in stored_ingredients:
             response.append({
+                'id': ing.id,
                 'gtin': ing.ingredient.gtin,
                 'name': ing.ingredient.name,
                 'expiry_countdown_in_days': abs(date.today() - ing.expiry_date).days,
@@ -50,12 +51,6 @@ class StorageView(APIView):
             return HttpResponse(status=200)
 
         return JsonResponse(serializer.errors, status=400)
-
-    def get_customer_ingredient(self, user, gtin):
-        customer = Customer.objects.get(user=user)
-        ingredient = Ingredient.objects.get(gtin=str(gtin))
-
-        return customer, ingredient
 
 
 class FreezerStorageView(StorageView):
@@ -82,11 +77,7 @@ class FreezerStorageView(StorageView):
         return StoredIngredientInFreezer.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
 
     def delete(self, request, format=None):
-        customer, ingredient = self.get_customer_ingredient(
-            request.user, request.data['gtin'])
-
-        StoredIngredientInFreezer.objects.get(
-            customer=customer, ingredient=ingredient).delete()
+        StoredIngredientInFreezer.objects.get(id=request.data['id']).delete()
 
         return HttpResponse(status=200)
 
@@ -114,11 +105,7 @@ class FridgeStorageView(StorageView):
         return StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
 
     def delete(self, request, format=None):
-        customer, ingredient = self.get_customer_ingredient(
-            request.user, request.data['gtin'])
-
-        StoredIngredientInFridge.objects.get(
-            customer=customer, ingredient=ingredient).delete()
+        StoredIngredientInFridge.objects.get(id=request.data['id']).delete()
 
         return HttpResponse(status=200)
 
@@ -146,10 +133,6 @@ class PantryStorageView(StorageView):
         return StoredIngredientInPantry.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
 
     def delete(self, request, format=None):
-        customer, ingredient = self.get_customer_ingredient(
-            request.user, request.data['gtin'])
-
-        StoredIngredientInPantry.objects.get(
-            customer=customer, ingredient=ingredient).delete()
+        StoredIngredientInPantry.objects.get(id=request.data['id']).delete()
 
         return HttpResponse(status=200)
