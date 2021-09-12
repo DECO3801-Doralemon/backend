@@ -24,7 +24,7 @@ class RecipeIngredient(models.Model):
     kg_used = models.FloatField()
 
     def __str__(self) -> str:
-        return f"{self.ingredient}, {self.weight_used}"
+        return f"{self.ingredient}, {self.kg_used}"
 
 
 class Recipe(models.Model):
