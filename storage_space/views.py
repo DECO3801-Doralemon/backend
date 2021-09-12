@@ -64,11 +64,7 @@ class FreezerStorageView(StorageView):
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        customer, ingredient = self.get_customer_ingredient(
-            request.user, request.data['gtin'])
-
-        stored_ingredient = StoredIngredientInFreezer.objects.get(
-            customer=customer, ingredient=ingredient)
+        stored_ingredient = StoredIngredientInFreezer.objects.get(id=request.data['id'])
 
         return self.save_put_data(stored_ingredient, request.data)
 
@@ -92,11 +88,7 @@ class FridgeStorageView(StorageView):
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        customer, ingredient = self.get_customer_ingredient(
-            request.user, request.data['gtin'])
-
-        stored_ingredient = StoredIngredientInFridge.objects.get(
-            customer=customer, ingredient=ingredient)
+        stored_ingredient = StoredIngredientInFridge.objects.get(id=request.data['id'])
 
         return self.save_put_data(stored_ingredient, request.data)
 
@@ -120,11 +112,7 @@ class PantryStorageView(StorageView):
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        customer, ingredient = self.get_customer_ingredient(
-            request.user, request.data['gtin'])
-
-        stored_ingredient = StoredIngredientInPantry.objects.get(
-            customer=customer, ingredient=ingredient)
+        stored_ingredient = StoredIngredientInPantry.objects.get(id=request.data['id'])
 
         return self.save_put_data(stored_ingredient, request.data)
 
