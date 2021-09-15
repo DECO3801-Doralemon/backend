@@ -1,30 +1,15 @@
 from rest_framework import serializers
 
 
-class CreateStorageSerializer(serializers.Serializer):
-    dataMatrix = serializers.CharField(max_length=100)
-
-
 class EditStorageSerializer(serializers.Serializer):
-    kg = serializers.IntegerField()
+    kg = serializers.IntegerField(min_value=0)
 
-
-class EditFreezerStorageSerializer(EditStorageSerializer):
     def update(self, instance, validated_data):
-        instance.kg = validated_data['kg']
-        instance.save()
-        return instance
+        kg = validated_data['kg']
+        if kg > 0:
+            instance.kg = kg
+            instance.save()
+        else:
+            instance.delete()
 
-
-class EditFridgeStorageSerializer(EditStorageSerializer):
-    def update(self, instance, validated_data):
-        instance.kg = validated_data['kg']
-        instance.save()
-        return instance
-
-
-class EditPantryStorageSerializer(EditStorageSerializer):
-    def update(self, instance, validated_data):
-        instance.kg = validated_data['kg']
-        instance.save()
         return instance

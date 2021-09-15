@@ -1,11 +1,11 @@
 class DataMatrixDecoder:
-    def decode(dataMatrix):
+    def decode(self, dataMatrix):
         def search(list, term):
             for i in range(len(list)):
                 if(list[i][0] == term):
                     return list[i]
             return None
-        
+
         dataMatrix = dataMatrix
         gs1list = [  # reminder to self add the name
             ('01', 14, False, 'Global Trade Item Number (GTIN)'),
@@ -26,7 +26,7 @@ class DataMatrixDecoder:
             ('422', 3, False, 'Country of Origin of a Trade Item'),
             ('8008', 12, True, 'Date and Time of Production')
         ]
-        finalResult = []
+        finalResult = {}
         while dataMatrix:
             print('---------------------------------')
             print('DataMatrix')
@@ -41,22 +41,21 @@ class DataMatrixDecoder:
                     for i in range(length[1]):
                         if not dataMatrix or dataMatrix[0] == '':
                             dataMatrix = dataMatrix[1:]
-                            finalResult.append((int(length[0]), result))
+                            finalResult[length[0]] = result
                             break
                         result = result + dataMatrix[0]
                         dataMatrix = dataMatrix[1:]
-                    finalResult.append(
-                        (int(length[0]), result[:2]+'-'+result[2:4]+'-'+result[4:]))
+                    finalResult[length[0]] = '20'+result[:2]+'-'+result[2:4]+'-'+result[4:]
                 else:
                     print(length[3])
                     result = ''
                     for i in range(length[1]):
                         if not dataMatrix or dataMatrix[0] == '':
-                            finalResult.append((int(length[0]), result))
+                            finalResult[length[0]] = result
                             break
                         result = result + dataMatrix[0]
                         dataMatrix = dataMatrix[1:]
-                    finalResult.append((int(length[0]), result))
+                    finalResult[length[0]] =  result
                 continue
             length = search(gs1list, head[:3])
             if length != None:
@@ -70,8 +69,8 @@ class DataMatrixDecoder:
                         if not dataMatrix or dataMatrix[0] == '':
                             dataMatrix = dataMatrix[1:]
                             result = result[:decimalPoints] + \
-                                ','+result[decimalPoints:]
-                            finalResult.append((int(length[0]), result))
+                                '.'+result[decimalPoints:]
+                            finalResult[length[0]] = result
                             break
                         else:
                             result = result + dataMatrix[0]
@@ -86,8 +85,8 @@ class DataMatrixDecoder:
                     for i in range(length[1]):
                         result = result + dataMatrix[0]
                         dataMatrix = dataMatrix[1:]
-                    result = result[:decimalPoints]+','+result[decimalPoints:]
-                    finalResult.append((int(length[0]), result))
+                    result = result[:decimalPoints]+'.'+result[decimalPoints:]
+                    finalResult[length[0]] = result
                     continue
                 else:
                     print(length[3])
@@ -96,8 +95,8 @@ class DataMatrixDecoder:
                     for i in range(length[1]):
                         result = result + dataMatrix[0]
                         dataMatrix = dataMatrix[1:]
-                    result = result[:decimalPoints]+','+result[decimalPoints:]
-                    finalResult.append((int(length[0]), result))
+                    result = result[:decimalPoints]+'.'+result[decimalPoints:]
+                    finalResult[length[0]] = result
                     continue
             length = search(gs1list, head[:4])
             if length != None:
@@ -106,8 +105,7 @@ class DataMatrixDecoder:
                 for i in range(length[1]):
                     result = result + dataMatrix[0]
                     dataMatrix = dataMatrix[1:]
-                finalResult.append(
-                    (int(length[0]), result[:2]+'-'+result[2:4]+'-'+result[4:6]+' '+result[6:]))
+                finalResult[length[0]] = result[:2]+'-'+result[2:4]+'-'+result[4:6]+' '+result[6:]
                 continue
             if length == None:
                 print('______________________________')
@@ -116,3 +114,13 @@ class DataMatrixDecoder:
                 print(finalResult)
                 return None
         return finalResult
+
+
+def main():
+    data_matrix_decoder = DataMatrixDecoder()
+    datamatrix = '010933968714184539220027851521080331030006631095633009'
+    result = data_matrix_decoder.decode(datamatrix)
+    print(result)
+
+if __name__ == "__main__":
+    main()

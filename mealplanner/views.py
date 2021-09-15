@@ -22,7 +22,7 @@ class MealPlanner(APIView):
         meal_plans_list = []
         for meal_plan in meal_plans:
             needed_ingredients = []
-            for ing in meal_plan.recipe.needed_ingredients.all():
+            for ing in meal_plan.recipe.recipe_ingredients.all():
                 needed_ingredients.append(str(ing))
 
             meal_plans_list.append({

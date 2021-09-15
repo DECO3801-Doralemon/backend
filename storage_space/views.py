@@ -7,7 +7,7 @@ from datetime import date
 from profile_feature.models import Customer
 from recipes_and_ingredients.models import Ingredient
 from .models import StoredIngredientInFreezer, StoredIngredientInFridge, StoredIngredientInPantry
-from .serializers import CreateStorageSerializer, EditFreezerStorageSerializer, EditFridgeStorageSerializer, EditPantryStorageSerializer
+from .serializers import EditStorageSerializer
 from .data_matrix_decoder import DataMatrixDecoder
 
 
@@ -21,11 +21,10 @@ class StorageView(APIView):
 
         data_matrix_decoder = DataMatrixDecoder()
 
-        serializer = CreateStorageSerializer(request.data_matrix)
-        results = data_matrix_decoder.decode(serializer.data_matrix)
+        results = data_matrix_decoder.decode(request.data['data_matrix'])
         gtin = results['01']
         expiry_date = results['15']
-        kg = results['310']
+        kg = float(results['310'])
 
         ingredient = Ingredient.objects.get(gtin=gtin)
 
@@ -35,13 +34,23 @@ class StorageView(APIView):
         response = []
         for ing in stored_ingredients:
             response.append({
+                'id': ing.id,
                 'gtin': ing.ingredient.gtin,
                 'name': ing.ingredient.name,
-                'expiry_countdown': abs(date.today() - ing.expiry_date).days,
+                'expiry_countdown_in_days': abs(date.today() - ing.expiry_date).days,
                 'kg': ing.kg,
             })
 
         return JsonResponse({'stored_ingredients': response})
+
+    def save_put_data(self, stored_ingredient, data):
+        serializer = EditStorageSerializer(
+            stored_ingredient, data)
+        if serializer.is_valid():
+            serializer.save()
+            return HttpResponse(status=200)
+
+        return JsonResponse(serializer.errors, status=400)
 
 
 class FreezerStorageView(StorageView):
@@ -55,24 +64,21 @@ class FreezerStorageView(StorageView):
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        user = request.user
-        customer = Customer.objects.get(user=user)
-        ingredient = Ingredient.objects.get(gtin=request.data['gtin'])
-
         stored_ingredient = StoredIngredientInFreezer.objects.get(
-            customer=customer, ingredient=ingredient)
+            id=request.data['id'])
 
-        serializer = EditFreezerStorageSerializer(
-            stored_ingredient, request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return HttpResponse(status=200)
-
-        return JsonResponse(serializer.errors, status=400)
+        return self.save_put_data(stored_ingredient, request.data)
 
     def post(self, request, format=None):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
-        return StoredIngredientInFreezer.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+        StoredIngredientInFreezer.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+
+        return HttpResponse(status=201)
+
+    def delete(self, request, format=None):
+        StoredIngredientInFreezer.objects.get(id=request.data['id']).delete()
+
+        return HttpResponse(status=200)
 
 
 class FridgeStorageView(StorageView):
@@ -80,29 +86,26 @@ class FridgeStorageView(StorageView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        stored_ingredients = StoredIngredientInFreezer.objects.filter(
+        stored_ingredients = StoredIngredientInFridge.objects.filter(
             customer=customer)
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        user = request.user
-        customer = Customer.objects.get(user=user)
-        ingredient = Ingredient.objects.get(gtin=request.data['gtin'])
-
         stored_ingredient = StoredIngredientInFridge.objects.get(
-            customer=customer, ingredient=ingredient)
+            id=request.data['id'])
 
-        serializer = EditFridgeStorageSerializer(
-            stored_ingredient, request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return HttpResponse(status=200)
-
-        return JsonResponse(serializer.errors, status=400)
+        return self.save_put_data(stored_ingredient, request.data)
 
     def post(self, request, format=None):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
-        return StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+        StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+
+        return HttpResponse(status=201)
+
+    def delete(self, request, format=None):
+        StoredIngredientInFridge.objects.get(id=request.data['id']).delete()
+
+        return HttpResponse(status=200)
 
 
 class PantryStorageView(StorageView):
@@ -110,26 +113,23 @@ class PantryStorageView(StorageView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        stored_ingredients = StoredIngredientInFreezer.objects.filter(
+        stored_ingredients = StoredIngredientInPantry.objects.filter(
             customer=customer)
         return self.stored_ingredient_to_json_response(stored_ingredients)
 
     def put(self, request, format=None):
-        user = request.user
-        customer = Customer.objects.get(user=user)
-        ingredient = Ingredient.objects.get(gtin=request.data['gtin'])
-
         stored_ingredient = StoredIngredientInPantry.objects.get(
-            customer=customer, ingredient=ingredient)
+            id=request.data['id'])
 
-        serializer = EditPantryStorageSerializer(
-            stored_ingredient, request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return HttpResponse(status=200)
-
-        return JsonResponse(serializer.errors, status=400)
+        return self.save_put_data(stored_ingredient, request.data)
 
     def post(self, request, format=None):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
-        return StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+        StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+
+        return HttpResponse(status=201)
+
+    def delete(self, request, format=None):
+        StoredIngredientInPantry.objects.get(id=request.data['id']).delete()
+
+        return HttpResponse(status=200)
