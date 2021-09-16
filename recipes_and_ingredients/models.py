@@ -39,7 +39,7 @@ class Recipe(models.Model):
     recipe_ingredients = models.ManyToManyField(RecipeIngredient)
     photo = models.ImageField(upload_to='recipes', default='recipes/test_photo.PNG')
     steps = models.TextField(max_length=1000)
-    customers_who_saved = models.ManyToManyField(Customer, related_name='customers_who_saved')
+    customers_who_save = models.ManyToManyField(Customer, related_name='customers_who_saved')
 
     def __str__(self) -> str:
         return f"{self.author.user.username}, {self.name}"
