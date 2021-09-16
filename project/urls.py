@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -30,4 +32,4 @@ urlpatterns = [
     path('api/v1/meal-planner/', include('mealplanner.urls')),
     path('api/v1/shopping/', include('shopping.urls')),
     path('api/v1/storage/', include('storage_space.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
