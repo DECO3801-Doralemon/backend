@@ -13,3 +13,22 @@ class CommunityRecipeSerializer(serializers.Serializer):
             recipe=recipe, photo=photo)
 
         return communityRecipe
+class AddLikeCommunitySerializer(serializers.Serializer):
+    communityRecipe_id = serializers.IntegerField()
+
+    def update(self, instance, validated_data):
+        instance.likes = validated_data.get('likes', instance.likes) + 1
+        instance.save()
+        return instance
+class RemoveLikeCommunitySerializer(serializers.Serializer):
+    communityRecipe_id = serializers.IntegerField()
+
+    def update(self, instance, validated_data):
+        likesAmt = validated_data.get('likes', instance.likes)
+        if likesAmt-1 =< 0:
+            likesAmt = 0
+        else:
+            likesAmt = likesAmt - 1
+        instance.likes = likesAmt
+        instance.save()
+        return instance
