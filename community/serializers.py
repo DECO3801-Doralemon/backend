@@ -25,7 +25,7 @@ class RemoveLikeCommunitySerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         likesAmt = validated_data.get('likes', instance.likes)
-        if likesAmt-1 =< 0:
+        if likesAmt-1 <= 0:
             likesAmt = 0
         else:
             likesAmt = likesAmt - 1

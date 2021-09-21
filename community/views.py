@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse, HttpResponse
 from recipes_and_ingredients.models import Recipe, RecipeIngredient
 from .models import CommunityRecipe
-from .serializers import CommunityRecipeSerializer, AddLikeCommunitySerializer, RemoveLikesCommunitySerializer
+from .serializers import CommunityRecipeSerializer, AddLikeCommunitySerializer, RemoveLikeCommunitySerializer
 
 # Create your views here.
 class CommunityView(APIView):
@@ -106,7 +106,7 @@ class RemoveLikesCommunityView(APIView):
         #lmao
         recipe = request.recipe
         communityRecipe = CommunityRecipe.objects.get(recipe=recipe)
-        serializer = RemoveLikesCommunitySerializer(communityRecipe, data=request.data)
+        serializer = RemoveLikeCommunitySerializer(communityRecipe, data=request.data)
         if serializer.is_valid():
             communityRecipe = serializer.save()
             return HttpResponse(status=200)
