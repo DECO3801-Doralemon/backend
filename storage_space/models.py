@@ -25,7 +25,7 @@ class StoredIngredientInFridge(models.Model):
 class StoredIngredientInPantry(models.Model):
     customer= models.ForeignKey(Customer, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    expiry_date = models.CharField(max_length=15)
+    expiry_date = models.DateField()
     kg = models.FloatField(default=0)
 
     def __str__(self) -> str:
