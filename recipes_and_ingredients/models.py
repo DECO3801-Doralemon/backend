@@ -10,9 +10,12 @@ from profile_feature.models import Customer
 class Tag(models.Model):
     name = models.CharField(max_length=15)
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Ingredient(models.Model):
-    gtin = models.IntegerField(primary_key=True)
+    gtin = models.CharField(unique=True, max_length=14)
     name = models.CharField(max_length=100)
 
     def __str__(self) -> str:
