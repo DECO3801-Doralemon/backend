@@ -25,6 +25,7 @@ class CommunityView(APIView):
             'likes': community_recipe.likes,
             'ingredient': needed_ingredients,
             'photo_url': community_recipe.recipe.photo.url,
+            'date_time_created': community_recipe.date_time_created.strftime('%B %d %Y')
         })
 
     def post(self, request, format=None):
@@ -56,7 +57,7 @@ class MassCommunityView(APIView):
             needed_ingredients = []
             for ing in crec.recipe.recipe_ingredients.all():
                 needed_ingredients.append(ing.ingredient.name)
-            
+
             community_recipes.append({
                 'id': crec.id,
                 'name': crec.recipe.name,
@@ -77,7 +78,7 @@ class AddLikesCommunityView(APIView):
         community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
         community_recipe.likes += 1
         community_recipe.save()
-        
+
         return HttpResponse(status=200)
 
 
@@ -90,5 +91,5 @@ class RemoveLikesCommunityView(APIView):
         community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
         community_recipe.likes -= 1
         community_recipe.save()
-        
+
         return HttpResponse(status=200)
