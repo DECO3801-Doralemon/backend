@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse, HttpResponse
-from recipes_and_ingredients.models import Recipe, RecipeIngredient
+from profile_feature.models import Customer
+from recipes_and_ingredients.models import Recipe
 from .models import CommunityRecipe
 from .serializers import CommunityRecipeSerializer, AddLikeCommunitySerializer, RemoveLikeCommunitySerializer
 
@@ -12,25 +13,26 @@ class CommunityView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        recipe = request.recipe
-        communityRecipe = CommunityRecipe.objects.get(recipe=recipe)
+        recipe_id = request.recipe_id
+        recipe = Recipe.objects.get(id=recipe_id)
+        community_recipe = CommunityRecipe.objects.get(recipe=recipe)
 
-        neededIngredients = []
-        for ing in CommunityRecipe.recipe.recipe_ingredients.all():
+        needed_ingredients = []
+        for ing in community_recipe.recipe.recipe_ingredients.all():
             needed_ingredients.append(ing.ingredient.name)
 
         return JsonResponse({
-            'first_name': CommunityRecipe.recipe.customer.user.first_name,
-            'last_name': CommunityRecipe.recipe.customer.user.last_name,
-            'recipe_name': CommunityRecipe.recipe.name,
-            'likes': CommunityRecipe.likes,
-            'ingredient': neededIngredients,
-            'photo_url': CommunityRecipe.photo.url,
+            'first_name': community_recipe.recipe.customer.user.first_name,
+            'last_name': community_recipe.recipe.customer.user.last_name,
+            'recipe_name': community_recipe.recipe.name,
+            'likes': community_recipe.likes,
+            'ingredient': needed_ingredients,
+            'photo_url': community_recipe.photo.url,
         })
 
     def post(self, request, format=None):
         recipe = request.recipe
-        communityRecipe = CommunityRecipe.objects.get(recipe=recipe)
+        community_recipe = CommunityRecipe.objects.get(recipe=recipe)
         serializer = CommunityRecipeSerializer(recipe, data=request.data)
         if serializer.is_valid():
             communityRecipe = serializer.save()
@@ -57,7 +59,7 @@ class MassCommunityView(APIView):
 
         communityRecipeList = []
         for crec in CommunityRecipe.all():
-            neededIngredients = []
+            needed_ingredients = []
             for ing in CommunityRecipe.recipe.recipe_ingredients.all():
                 needed_ingredients.append(ing.ingredient.name)
             communityRecipeList.append({

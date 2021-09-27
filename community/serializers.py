@@ -1,5 +1,7 @@
 from rest_framework import serializers
-import datetime
+from recipes_and_ingredients.models import Recipe
+from profile_feature.models import Customer
+from .models import CommunityRecipe
 
 
 class CommunityRecipeSerializer(serializers.Serializer):
