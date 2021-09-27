@@ -12,41 +12,38 @@ class CommunityView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        recipe_id = request.recipe_id
-        recipe = Recipe.objects.get(id=recipe_id)
-        community_recipe = CommunityRecipe.objects.get(recipe=recipe)
+    def get(self, request, community_recipe_id, format=None):
+        community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
 
         needed_ingredients = []
         for ing in community_recipe.recipe.recipe_ingredients.all():
             needed_ingredients.append(ing.ingredient.name)
 
         return JsonResponse({
-            'first_name': community_recipe.recipe.customer.user.first_name,
-            'last_name': community_recipe.recipe.customer.user.last_name,
+            'name': community_recipe.recipe.author.user.first_name + community_recipe.recipe.author.user.last_name,
             'recipe_name': community_recipe.recipe.name,
             'likes': community_recipe.likes,
             'ingredient': needed_ingredients,
-            'photo_url': community_recipe.photo.url,
+            'photo_url': community_recipe.recipe.photo.url,
         })
 
     def post(self, request, format=None):
-        recipe = request.recipe
-        community_recipe = CommunityRecipe.objects.get(recipe=recipe)
-        serializer = CommunityRecipeSerializer(recipe, data=request.data)
+        serializer = CommunityRecipeSerializer(
+            data={'recipe_id': request.recipe_id})
         if serializer.is_valid():
-            communityRecipe = serializer.save()
+            serializer.save()
             return HttpResponse(status=200)
+
         return JsonResponse(serializer.errors, status=400)
 
     def delete(self, request, format=None):
         try:
-            CommunityRecipe_id = int(request.POST.get('CommunityRecipe_id'))
-            CommunityRecipe.objects.get(id=CommunityRecipe_id).delete()
+            community_recipe_id = int(request.POST.get('community_recipe_id'))
+            CommunityRecipe.objects.get(id=community_recipe_id).delete()
 
             return HttpResponse(status=200)
         except ValueError:
-            return JsonResponse({'error': "Invalid ID Value"}, status=400)
+            return JsonResponse({'error': "Invalid ID value"}, status=400)
 
 
 class MassCommunityView(APIView):
@@ -54,23 +51,21 @@ class MassCommunityView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        recipe = request.recipe
-        communityRecipe = CommunityRecipe.objects.get(recipe=recipe)
-
-        communityRecipeList = []
-        for crec in CommunityRecipe.all():
+        community_recipes = []
+        for crec in CommunityRecipe.objects.all().order_by('-date_time_created'):
             needed_ingredients = []
-            for ing in CommunityRecipe.recipe.recipe_ingredients.all():
+            for ing in crec.recipe.recipe_ingredients.all():
                 needed_ingredients.append(ing.ingredient.name)
-            communityRecipeList.append({
-                'community_recipe_id': crec.id,
-                'community_recipe_name': crec.recipe.name,
+            
+            community_recipes.append({
+                'id': crec.id,
+                'name': crec.recipe.name,
                 'likes': crec.likes,
-                'community_recipe_ingredients': needed_ingredients,
-                'photo_url': crec.photo.url,
+                'needed_ingredients': needed_ingredients,
+                'photo_url': crec.recipe.photo.url,
             })
 
-        return JsonResponse({'community_recipes': communityRecipeList})
+        return JsonResponse({'community_recipes': community_recipes})
 
 
 class AddLikesCommunityView(APIView):
@@ -78,22 +73,12 @@ class AddLikesCommunityView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        user = request.user
-        customer = Customer.objects.get(user=user)
-        serializer = EditSerializer(customer, data=request.data)
-        if serializer.is_valid():
-            customer = serializer.save()
-            return HttpResponse(status=200)
-        return JsonResponse(serializer.errors, status=400)
-        # lmao
-        recipe = request.recipe
-        communityRecipe = CommunityRecipe.objects.get(recipe=recipe)
-        serializer = AddLikeCommunitySerializer(
-            communityRecipe, data=request.data)
-        if serializer.is_valid():
-            communityRecipe = serializer.save()
-            return HttpResponse(status=200)
-        return JsonResponse(serializer.errors, status=400)
+        community_recipe_id = request.community_recipe_id
+        community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
+        community_recipe.likes += 1
+        community_recipe.save()
+        
+        return HttpResponse(status=200)
 
 
 class RemoveLikesCommunityView(APIView):
@@ -101,19 +86,9 @@ class RemoveLikesCommunityView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        user = request.user
-        customer = Customer.objects.get(user=user)
-        serializer = EditSerializer(customer, data=request.data)
-        if serializer.is_valid():
-            customer = serializer.save()
-            return HttpResponse(status=200)
-        return JsonResponse(serializer.errors, status=400)
-        # lmao
-        recipe = request.recipe
-        communityRecipe = CommunityRecipe.objects.get(recipe=recipe)
-        serializer = RemoveLikeCommunitySerializer(
-            communityRecipe, data=request.data)
-        if serializer.is_valid():
-            communityRecipe = serializer.save()
-            return HttpResponse(status=200)
-        return JsonResponse(serializer.errors, status=400)
+        community_recipe_id = request.community_recipe_id
+        community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
+        community_recipe.likes -= 1
+        community_recipe.save()
+        
+        return HttpResponse(status=200)

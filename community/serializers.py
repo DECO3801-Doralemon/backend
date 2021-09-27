@@ -6,21 +6,16 @@ from .models import CommunityRecipe
 
 class CommunityRecipeSerializer(serializers.Serializer):
     recipe_id = serializers.IntegerField()
-    photo = serializers.ImageField(default='profilePic/GDR.PNG')
 
     def create(self, validated_data):
         recipe = Recipe.objects.get(id=validated_data['recipe_id'])
-        customer = Customer.objects.get(id=validated_data['customer_id'])
-        communityRecipe = CommunityRecipe.objects.create(
-            recipe=recipe, photo=photo)
-
-        return communityRecipe
+        return CommunityRecipe.objects.create(recipe=recipe)
 
 
 class AddLikeCommunitySerializer(serializers.Serializer):
-    communityRecipe_id = serializers.IntegerField()
+    community_recipe_id = serializers.IntegerField()
 
-    def update(self, instance, validated_data):
+    def update(self, validated_data):
         instance.likes = validated_data.get('likes', instance.likes) + 1
         instance.save()
         return instance
