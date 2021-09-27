@@ -17,6 +17,7 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     gtin = models.CharField(unique=True, max_length=14)
     name = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to='ingredients', default='ingredients/test_photo.PNG')
 
     def __str__(self) -> str:
         return f"{self.gtin} {self.name}"
@@ -31,11 +32,14 @@ class RecipeIngredient(models.Model):
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    author = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='author')
     time_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=100)
     tags = models.ManyToManyField(Tag)
     recipe_ingredients = models.ManyToManyField(RecipeIngredient)
+    photo = models.ImageField(upload_to='recipes', default='recipes/test_photo.PNG')
+    steps = models.TextField(max_length=1000)
+    customers_who_save = models.ManyToManyField(Customer, related_name='customers_who_saved')
 
     def __str__(self) -> str:
         return f"{self.author.user.username}, {self.name}"

@@ -6,9 +6,9 @@ from django.core.exceptions import ValidationError
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.CharField(max_length=100, blank=True, null=True)
+    bio = models.TextField(max_length=100, blank=True, null=True)
     photo = models.ImageField(
-        upload_to='profile_photo', default='profile_photo/test_photo.PNG', blank=True, null=True)
+        upload_to='profile_photos', default='profile_photos/test_photo.PNG', blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}"

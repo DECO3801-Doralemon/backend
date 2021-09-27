@@ -31,11 +31,11 @@ class ProfileUnitTest(APITestCase):
 
         self.assertEqual(response.content.decode(
             "UTF-8"),
-            '{"first_name": "Gibran", "last_name": "Gibran", "username": "gibran", "email": "gibran@gibran.gibran", "biography": "Test", "photo_url": "/profile_photo/test_photo.PNG"}')
+            '{"first_name": "Gibran", "last_name": "Gibran", "username": "gibran", "email": "gibran@gibran.gibran", "biography": "Test", "photo_url": "/media/profile_photos/test_photo.PNG"}')
 
     def test_profile_post(self):
         photo = SimpleUploadedFile(name='test_photo.png',
-                                   content=open(settings.BASE_DIR / 'mediafiles/profile_photo/test_photo.png', 'rb').read())
+                                   content=open(settings.BASE_DIR / 'mediafiles/profile_photos/test_photo.png', 'rb').read())
 
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + str(self.accessToken))
