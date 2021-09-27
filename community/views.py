@@ -2,10 +2,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse, HttpResponse
-from profile_feature.models import Customer
-from recipes_and_ingredients.models import Recipe
 from .models import CommunityRecipe
-from .serializers import CommunityRecipeSerializer, AddLikeCommunitySerializer, RemoveLikeCommunitySerializer
+from .serializers import CommunityRecipeSerializer
 
 
 class CommunityView(APIView):
