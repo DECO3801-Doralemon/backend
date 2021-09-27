@@ -23,12 +23,13 @@ class MealPlanner(APIView):
         for meal_plan in meal_plans:
             needed_ingredients = []
             for ing in meal_plan.recipe.recipe_ingredients.all():
-                needed_ingredients.append(str(ing))
+                needed_ingredients.append(ing.ingredient.name)
 
             meal_plans_list.append({
                 'meal_plan_id': meal_plan.id,
                 'recipe_name': meal_plan.recipe.name,
                 'ingredients': needed_ingredients,
+                'steps': meal_plan.recipe.steps
             })
 
         return JsonResponse({'meal_plans': meal_plans_list})
