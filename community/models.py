@@ -1,5 +1,4 @@
 from django.db import models
-import datetime
 from recipes_and_ingredients.models import Recipe
 
 
