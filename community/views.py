@@ -22,7 +22,6 @@ class CommunityView(APIView):
         return JsonResponse({
             'name': community_recipe.recipe.author.user.first_name + community_recipe.recipe.author.user.last_name,
             'recipe_name': community_recipe.recipe.name,
-            'likes': community_recipe.likes,
             'ingredient': needed_ingredients,
             'photo_url': community_recipe.recipe.photo.url,
             'date_time_created': community_recipe.date_time_created.strftime('%B %d %Y')
@@ -61,35 +60,8 @@ class MassCommunityView(APIView):
             community_recipes.append({
                 'id': crec.id,
                 'name': crec.recipe.name,
-                'likes': crec.likes,
                 'needed_ingredients': needed_ingredients,
                 'photo_url': crec.recipe.photo.url,
             })
 
         return JsonResponse({'community_recipes': community_recipes})
-
-
-class AddLikesCommunityView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, format=None):
-        community_recipe_id = request.community_recipe_id
-        community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
-        community_recipe.likes += 1
-        community_recipe.save()
-
-        return HttpResponse(status=200)
-
-
-class RemoveLikesCommunityView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, format=None):
-        community_recipe_id = request.community_recipe_id
-        community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
-        community_recipe.likes -= 1
-        community_recipe.save()
-
-        return HttpResponse(status=200)
