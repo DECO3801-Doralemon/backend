@@ -6,7 +6,7 @@ from recipes_and_ingredients.models import Recipe, RecipeIngredient
 from .models import CommunityRecipe
 from .serializers import CommunityRecipeSerializer, AddLikeCommunitySerializer, RemoveLikeCommunitySerializer
 
-# Create your views here.
+
 class CommunityView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -70,6 +70,7 @@ class MassCommunityView(APIView):
 
         return JsonResponse({'community_recipes': communityRecipeList})
 
+
 class AddLikesCommunityView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -82,14 +83,16 @@ class AddLikesCommunityView(APIView):
             customer = serializer.save()
             return HttpResponse(status=200)
         return JsonResponse(serializer.errors, status=400)
-        #lmao
+        # lmao
         recipe = request.recipe
         communityRecipe = CommunityRecipe.objects.get(recipe=recipe)
-        serializer = AddLikeCommunitySerializer(communityRecipe, data=request.data)
+        serializer = AddLikeCommunitySerializer(
+            communityRecipe, data=request.data)
         if serializer.is_valid():
             communityRecipe = serializer.save()
             return HttpResponse(status=200)
         return JsonResponse(serializer.errors, status=400)
+
 
 class RemoveLikesCommunityView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -103,10 +106,11 @@ class RemoveLikesCommunityView(APIView):
             customer = serializer.save()
             return HttpResponse(status=200)
         return JsonResponse(serializer.errors, status=400)
-        #lmao
+        # lmao
         recipe = request.recipe
         communityRecipe = CommunityRecipe.objects.get(recipe=recipe)
-        serializer = RemoveLikeCommunitySerializer(communityRecipe, data=request.data)
+        serializer = RemoveLikeCommunitySerializer(
+            communityRecipe, data=request.data)
         if serializer.is_valid():
             communityRecipe = serializer.save()
             return HttpResponse(status=200)
