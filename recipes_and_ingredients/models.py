@@ -15,7 +15,7 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    gtin = models.IntegerField(primary_key=True)
+    gtin = models.CharField(unique=True, max_length=14)
     name = models.CharField(max_length=100)
     photo = models.ImageField(upload_to='ingredients', default='ingredients/test_photo.PNG')
 

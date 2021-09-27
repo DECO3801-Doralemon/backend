@@ -3,12 +3,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
-from django.core.exceptions import ObjectDoesNotExist
 from datetime import date, timedelta
 from profile_feature.models import Customer
 from mealplanner.models import MealPlan
 from storage_space.models import StoredIngredientInFreezer, StoredIngredientInFridge, StoredIngredientInPantry
-from recipes_and_ingredients.models import Ingredient
 
 
 class ShoppingView(APIView):
@@ -26,7 +24,7 @@ class ShoppingView(APIView):
             size = len(ingredients)
             while i < size:
                 while j < size:
-                    if ingredients[i][0].gtin == ingredients[j][0].gtin:
+                    if ingredients[i][0].id == ingredients[j][0].id:
                         ingredients[i][1] += ingredients[j][1]
                         ingredients.pop(j)
                         size = len(ingredients)
@@ -38,7 +36,7 @@ class ShoppingView(APIView):
         user = request.user
         customer = Customer.objects.get(user=user)
 
-        TODAY = date(2021, 8, 20)
+        TODAY = date.today()
         ingredients = []
         for single_date in iterate_thirty_days(TODAY):
             for meal_plan in MealPlan.objects.filter(
@@ -70,6 +68,7 @@ class ShoppingView(APIView):
 
             if kg_total == 0:
                 needed_ingredients.append({
+                    "id": ingredient.id,
                     "gtin": ingredient.gtin,
                     "name": ingredient.name,
                     "needed_kg": kg_used,
@@ -79,6 +78,7 @@ class ShoppingView(APIView):
 
                 if needed_kg > 0:
                     needed_ingredients.append({
+                        "id": ingredient.id,
                         "gtin": ingredient.gtin,
                         "name": ingredient.name,
                         "needed_kg": needed_kg,
