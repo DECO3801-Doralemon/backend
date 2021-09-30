@@ -4,7 +4,6 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse, HttpResponse
 from profile_feature.models import Customer
 from .models import Recipe
-from .serializers import MealPlannerSerializer
 
 # Create your views here.
 class AllRecipeView(APIView):
@@ -29,7 +28,7 @@ class AllRecipeView(APIView):
 
 class SingleRecipeView(APIView):
     def get(self, request, recipe_id, format=None):
-        recipe = Recipe.objects.get(id=community_recipe_id)
+        recipe = Recipe.objects.get(id=recipe_id)
 
         needed_ingredients = []
         for ing in recipe.recipe_ingredients.all():
