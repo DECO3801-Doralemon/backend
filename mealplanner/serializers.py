@@ -13,8 +13,7 @@ class MealPlannerSerializer(serializers.Serializer):
     def create(self, validated_data):
         recipe = Recipe.objects.get(id=validated_data['recipe_id'])
         customer = Customer.objects.get(id=validated_data['customer_id'])
-
         meal_plan = MealPlan.objects.create(
             customer=customer, date=validated_data['date'], recipe=recipe)
-        
+
         return meal_plan

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'storage_space',
     'recipes_and_ingredients',
     'rest_framework',
+    'community',
 ]
 
 MIDDLEWARE = [

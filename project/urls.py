@@ -32,4 +32,5 @@ urlpatterns = [
     path('api/v1/meal-planner/', include('mealplanner.urls')),
     path('api/v1/shopping/', include('shopping.urls')),
     path('api/v1/storage/', include('storage_space.urls')),
+    path('api/v1/community/', include('community.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
