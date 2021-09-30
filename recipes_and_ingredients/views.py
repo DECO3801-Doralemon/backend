@@ -19,10 +19,10 @@ class AllRecipeView(APIView):
                 needed_ingredients.append(ing.ingredient.name)
 
             recipes.append({
-                'id': crec.id,
-                'name': crec.recipe.name,
+                'id': recipe.id,
+                'name': recipe.recipe.name,
                 'needed_ingredients': needed_ingredients,
-                'photo_url': crec.recipe.photo.url,
+                'photo_url': recipe.recipe.photo.url,
             })
 
         return JsonResponse({'recipes': recipes})
@@ -32,28 +32,31 @@ class SingleRecipeView(APIView):
         recipe = Recipe.objects.get(id=community_recipe_id)
 
         needed_ingredients = []
-        for ing in community_recipe.recipe.recipe_ingredients.all():
+        for ing in recipe.recipe_ingredients.all():
             needed_ingredients.append(ing.ingredient.name)
 
         return JsonResponse({
-            'name': community_recipe.recipe.author.user.first_name + community_recipe.recipe.author.user.last_name,
-            'recipe_name': community_recipe.recipe.name,
+            'name': recipe.author.user.first_name + recipe.author.user.last_name,
+            'recipe_name': recipe.name,
             'ingredient': needed_ingredients,
-            'photo_url': community_recipe.recipe.photo.url,
-            'date_time_created': community_recipe.date_time_created.strftime('%B %d %Y')
+            'photo_url': recipe.photo.url,
+            'date_time_created': recipe.date_time_created.strftime('%B %d %Y')
         })
     def post(self, request, format=None):
-        serializer = RecipeSerializer(
-            data={'recipe_id': request.recipe_id})
-        if serializer.is_valid():
-            serializer.save()
-            return HttpResponse(status=200)
-
-        return JsonResponse(serializer.errors, status=400)
+        user = request.user
+        customer = Customer.objects.get(user=user)
+        name = request.data["name"]
+        tags = json.loads(request.data["tags"])
+        recipe_ingredients = json.loads(request.data["recipe_ingredients"])
+        photo = request.data["photo"]
+        steps = request.data["steps"]
+        customers_who_save = request.data["customers_who_save"]
+        Recipe.objects.create(author=customer, name=name, tags = tags, recipe_ingredients = recipe_ingredients, photo = photo, steps = steps, customers_who_save = customers_who_save)
+        return HttpResponse(status=201)
 
     def delete(self, request, format=None):
         try:
-            recipe_id = int(request.POST.get('community_recipe_id'))
+            recipe_id = int(request.POST.get('recipe_id'))
             Recipe.objects.get(id=recipe_id).delete()
 
             return HttpResponse(status=200)
