@@ -1,13 +1,14 @@
 from django.contrib import admin
 from .models import *
 
+
 class RecipeIngredientAdmin(admin.ModelAdmin):
     list_display = ('ingredient', 'kg_used')
     search_fields = ('ingredient',)
-    
+
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'author', 'time_created','name')
+    list_display = ('id', 'author', 'time_created', 'name')
     search_fields = ('id', 'author', 'time_created', 'name')
 
 

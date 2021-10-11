@@ -6,6 +6,8 @@ from profile_feature.models import Customer
 from .models import Recipe
 
 # Create your views here.
+
+
 class AllRecipeView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -26,6 +28,7 @@ class AllRecipeView(APIView):
 
         return JsonResponse({'recipes': recipes})
 
+
 class SingleRecipeView(APIView):
     def get(self, request, recipe_id, format=None):
         recipe = Recipe.objects.get(id=recipe_id)
@@ -41,6 +44,7 @@ class SingleRecipeView(APIView):
             'photo_url': recipe.photo.url,
             'date_time_created': recipe.date_time_created.strftime('%B %d %Y')
         })
+
     def post(self, request, format=None):
         user = request.user
         customer = Customer.objects.get(user=user)
@@ -50,7 +54,8 @@ class SingleRecipeView(APIView):
         photo = request.data["photo"]
         steps = request.data["steps"]
         customers_who_save = request.data["customers_who_save"]
-        Recipe.objects.create(author=customer, name=name, tags = tags, recipe_ingredients = recipe_ingredients, photo = photo, steps = steps, customers_who_save = customers_who_save)
+        Recipe.objects.create(author=customer, name=name, tags=tags, recipe_ingredients=recipe_ingredients,
+                              photo=photo, steps=steps, customers_who_save=customers_who_save)
         return HttpResponse(status=201)
 
     def delete(self, request, format=None):
