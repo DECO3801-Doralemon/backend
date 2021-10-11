@@ -60,7 +60,10 @@ class SingleRecipeView(APIView):
         tag_ids = json.loads(request.data["tags"])
         tags = []
         for id in tag_ids:
-            tags.append(Tag.objects.get(id=id))
+            try:
+                tags.append(Tag.objects.get(id=id))
+            except ObjectDoesNotExist:
+                return JsonResponse({'error': "Invalid tags ID value"}, status=400)
 
         recipe_ingredients_data = json.loads(
             request.data["recipe_ingredients"])
