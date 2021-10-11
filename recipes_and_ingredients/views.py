@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse, HttpResponse
+import json
 from profile_feature.models import Customer
 from .models import Recipe
 
