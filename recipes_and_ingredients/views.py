@@ -1,10 +1,11 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse, HttpResponse
 import json
 from profile_feature.models import Customer
-from .models import Recipe
+from .models import Ingredient, Recipe, RecipeIngredient, Tag
 
 # Create your views here.
 
@@ -15,22 +16,25 @@ class AllRecipeView(APIView):
 
     def get(self, request, format=None):
         recipes = []
-        for recipe in Recipe.objects.all().order_by('-date_time_created'):
+        for recipe in Recipe.objects.all().order_by('-time_created'):
             needed_ingredients = []
-            for ing in recipe.recipe.recipe_ingredients.all():
+            for ing in recipe.recipe_ingredients.all():
                 needed_ingredients.append(ing.ingredient.name)
 
             recipes.append({
                 'id': recipe.id,
-                'name': recipe.recipe.name,
+                'name': recipe.name,
                 'needed_ingredients': needed_ingredients,
-                'photo_url': recipe.recipe.photo.url,
+                'photo_url': recipe.photo.url,
             })
 
         return JsonResponse({'recipes': recipes})
 
 
 class SingleRecipeView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, recipe_id, format=None):
         recipe = Recipe.objects.get(id=recipe_id)
 
@@ -43,20 +47,39 @@ class SingleRecipeView(APIView):
             'recipe_name': recipe.name,
             'ingredient': needed_ingredients,
             'photo_url': recipe.photo.url,
-            'date_time_created': recipe.date_time_created.strftime('%B %d %Y')
+            'time_created': recipe.time_created.strftime('%B %d %Y')
         })
 
     def post(self, request, format=None):
         user = request.user
         customer = Customer.objects.get(user=user)
         name = request.data["name"]
-        tags = json.loads(request.data["tags"])
-        recipe_ingredients = json.loads(request.data["recipe_ingredients"])
         photo = request.data["photo"]
         steps = request.data["steps"]
-        customers_who_save = request.data["customers_who_save"]
-        Recipe.objects.create(author=customer, name=name, tags=tags, recipe_ingredients=recipe_ingredients,
-                              photo=photo, steps=steps, customers_who_save=customers_who_save)
+
+        tag_ids = json.loads(request.data["tags"])
+        tags = []
+        for id in tag_ids:
+            tags.append(Tag.objects.get(id=id))
+
+        recipe_ingredients_data = json.loads(
+            request.data["recipe_ingredients"])
+        recipe_ingredients = []
+        for data in recipe_ingredients_data:
+            try:
+                ing = Ingredient.objects.get(id=data['id'])
+            except ObjectDoesNotExist:
+                return JsonResponse({'error': "Invalid Ingredient ID value"}, status=400)
+
+            recipe_ingredients.append(RecipeIngredient.objects.create(
+                ingredient=ing, kg_used=data['kg_used']))
+
+        recipe = Recipe.objects.create(
+            author=customer, name=name, photo=photo, steps=steps)
+        recipe.tags.set(tags)
+        recipe.recipe_ingredients.set(recipe_ingredients)
+        recipe.customers_who_save.set([customer])
+
         return HttpResponse(status=201)
 
     def delete(self, request, format=None):

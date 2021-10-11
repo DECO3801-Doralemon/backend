@@ -13,11 +13,16 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('gtin', 'name')
-    search_fields = ('gtin', 'name')
+    list_display = ('id', 'gtin', 'name')
+    search_fields = ('id', 'gtin', 'name')
 
 
-admin.site.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    search_fields = ('id', 'name')
+
+
+admin.site.register(Tag, TagAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(RecipeIngredient, RecipeIngredientAdmin)
