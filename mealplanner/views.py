@@ -47,7 +47,7 @@ class MealPlanner(APIView):
         serializer = MealPlannerSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(status=200)
+            return JsonResponse({"status": "OK"}, status=200)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -56,7 +56,7 @@ class MealPlanner(APIView):
             meal_plan_id = int(request.POST.get('meal_plan_id'))
             MealPlan.objects.get(id=meal_plan_id).delete()
 
-            return JsonResponse(status=200)
+            return JsonResponse({"status": "OK"}, status=200)
         except ValueError:
             return JsonResponse({'error': "Invalid ID Value"}, status=400)
         

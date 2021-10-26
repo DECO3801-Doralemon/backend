@@ -33,7 +33,7 @@ class ProfileView(APIView):
         serializer = EditSerializer(customer, data=request.data)
         if serializer.is_valid():
             customer = serializer.save()
-            return JsonResponse(status=200)
+            return JsonResponse({"status": "OK"}, status=200)
         return JsonResponse(serializer.errors, status=400)
 
 
@@ -60,6 +60,6 @@ class EditPasswordView(APIView):
             # set_password also hashes the password that the user will get
             self.object.set_password(serializer.data.get("new_password"))
             self.object.save()
-            return JsonResponse(status=204)
+            return JsonResponse({"response": "No Content"}, status=204)
 
         return JsonResponse(serializer.errors, status=400)
