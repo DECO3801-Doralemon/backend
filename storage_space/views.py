@@ -73,12 +73,12 @@ class FreezerStorageView(StorageView):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
         StoredIngredientInFreezer.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
 
-        return HttpResponse(status=201)
+        return JsonResponse(status=201)
 
     def delete(self, request, format=None):
         StoredIngredientInFreezer.objects.get(id=request.data['id']).delete()
 
-        return HttpResponse(status=200)
+        return JsonResponse(status=200)
 
 
 class FridgeStorageView(StorageView):
@@ -100,12 +100,12 @@ class FridgeStorageView(StorageView):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
         StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
 
-        return HttpResponse(status=201)
+        return JsonResponse(status=201)
 
     def delete(self, request, format=None):
         StoredIngredientInFridge.objects.get(id=request.data['id']).delete()
 
-        return HttpResponse(status=200)
+        return JsonResponse(status=200)
 
 
 class PantryStorageView(StorageView):
@@ -127,9 +127,9 @@ class PantryStorageView(StorageView):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
         StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
 
-        return HttpResponse(status=201)
+        return JsonResponse(status=201)
 
     def delete(self, request, format=None):
         StoredIngredientInPantry.objects.get(id=request.data['id']).delete()
 
-        return HttpResponse(status=200)
+        return JsonResponse(status=200)
