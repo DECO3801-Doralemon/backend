@@ -11,7 +11,10 @@ class CommunityView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, community_recipe_id, format=None):
-        community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
+        try:
+            community_recipe = CommunityRecipe.objects.get(id=community_recipe_id)
+        except:
+            return JsonResponse({"error": "Invalid community recipe ID"}, status=400)
 
         needed_ingredients = []
         for ing in community_recipe.recipe.recipe_ingredients.all():
