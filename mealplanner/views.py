@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from profile_feature.models import Customer
 from .models import MealPlan
 from .serializers import MealPlannerSerializer
@@ -47,7 +47,7 @@ class MealPlanner(APIView):
         serializer = MealPlannerSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return HttpResponse(status=200)
+            return JsonResponse(status=200)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -56,7 +56,7 @@ class MealPlanner(APIView):
             meal_plan_id = int(request.POST.get('meal_plan_id'))
             MealPlan.objects.get(id=meal_plan_id).delete()
 
-            return HttpResponse(status=200)
+            return JsonResponse(status=200)
         except ValueError:
             return JsonResponse({'error': "Invalid ID Value"}, status=400)
         

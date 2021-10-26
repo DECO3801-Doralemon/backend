@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from .models import CommunityRecipe
 from .serializers import CommunityRecipeSerializer
 
@@ -30,7 +30,7 @@ class CommunityView(APIView):
             data={'recipe_id': request.recipe_id})
         if serializer.is_valid():
             serializer.save()
-            return HttpResponse(status=200)
+            return JsonResponse(status=200)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -39,7 +39,7 @@ class CommunityView(APIView):
             community_recipe_id = int(request.POST.get('community_recipe_id'))
             CommunityRecipe.objects.get(id=community_recipe_id).delete()
 
-            return HttpResponse(status=200)
+            return JsonResponse(status=200)
         except ValueError:
             return JsonResponse({'error': "Invalid ID value"}, status=400)
 

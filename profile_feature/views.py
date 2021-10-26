@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Customer
 from .serializers import EditSerializer, EditPasswordSerializer
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -33,7 +33,7 @@ class ProfileView(APIView):
         serializer = EditSerializer(customer, data=request.data)
         if serializer.is_valid():
             customer = serializer.save()
-            return HttpResponse(status=200)
+            return JsonResponse(status=200)
         return JsonResponse(serializer.errors, status=400)
 
 
