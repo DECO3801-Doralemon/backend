@@ -1,4 +1,3 @@
-from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.db import IntegrityError
@@ -21,6 +20,6 @@ class RegisterView(APIView):
             except IntegrityError:
                 return JsonResponse(data={"error": "UsernameDuplicateError"}, status=400)
 
-            return HttpResponse(status=201)
+            return JsonResponse(status=201)
 
         return JsonResponse(serializer.errors, status=400)

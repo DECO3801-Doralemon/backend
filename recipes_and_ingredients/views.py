@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 import json
 from profile_feature.models import Customer
 from .models import Ingredient, Recipe, RecipeIngredient, Tag
@@ -90,6 +90,6 @@ class SingleRecipeView(APIView):
             recipe_id = int(request.POST.get('recipe_id'))
             Recipe.objects.get(id=recipe_id).delete()
 
-            return HttpResponse(status=200)
+            return JsonResponse(status=200)
         except ValueError:
             return JsonResponse({'error': "Invalid ID value"}, status=400)

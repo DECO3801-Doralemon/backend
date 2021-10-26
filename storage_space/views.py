@@ -1,4 +1,4 @@
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import JsonResponse
 from recipes_and_ingredients.models import Ingredient
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -48,7 +48,7 @@ class StorageView(APIView):
             stored_ingredient, data)
         if serializer.is_valid():
             serializer.save()
-            return HttpResponse(status=200)
+            return JsonResponse(status=200)
 
         return JsonResponse(serializer.errors, status=400)
 
