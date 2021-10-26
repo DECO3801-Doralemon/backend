@@ -27,7 +27,7 @@ class CommunityView(APIView):
 
     def post(self, request, format=None):
         serializer = CommunityRecipeSerializer(
-            data={'recipe_id': request.recipe_id})
+            data={'recipe_id': request.POST.get('recipe_id')})
         if serializer.is_valid():
             serializer.save()
             return JsonResponse({"status": "OK"}, status=200)
