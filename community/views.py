@@ -23,7 +23,7 @@ class CommunityView(APIView):
         return JsonResponse({
             'name': community_recipe.recipe.author.user.first_name + community_recipe.recipe.author.user.last_name,
             'recipe_name': community_recipe.recipe.name,
-            'ingredient': needed_ingredients,
+            'needed_ingredients': needed_ingredients,
             'photo_url': community_recipe.recipe.photo.url,
             'date_time_created': community_recipe.date_time_created.strftime('%B %d %Y'),
             'steps': community_recipe.recipe.steps,
@@ -61,7 +61,8 @@ class MassCommunityView(APIView):
 
             community_recipes.append({
                 'id': crec.id,
-                'name': crec.recipe.name,
+                'name': crec.recipe.author.user.first_name + crec.recipe.author.user.last_name,
+                'recipe_name': crec.recipe.name,
                 'needed_ingredients': needed_ingredients,
                 'photo_url': crec.recipe.photo.url,
             })
