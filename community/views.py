@@ -25,7 +25,8 @@ class CommunityView(APIView):
             'recipe_name': community_recipe.recipe.name,
             'ingredient': needed_ingredients,
             'photo_url': community_recipe.recipe.photo.url,
-            'date_time_created': community_recipe.date_time_created.strftime('%B %d %Y')
+            'date_time_created': community_recipe.date_time_created.strftime('%B %d %Y'),
+            'steps': community_recipe.recipe.steps,
         })
 
     def post(self, request, format=None):
