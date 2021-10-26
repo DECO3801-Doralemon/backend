@@ -55,11 +55,11 @@ class EditPasswordView(APIView):
             # Check old password
             old_password = serializer.data.get("old_password")
             if not self.object.check_password(old_password):
-                return Response({"old_password": ["Wrong password."]},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({"old_password": ["Wrong password."]},
+                                status=400)
             # set_password also hashes the password that the user will get
             self.object.set_password(serializer.data.get("new_password"))
             self.object.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return JsonResponse(status=204)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(serializer.errors, status=400)

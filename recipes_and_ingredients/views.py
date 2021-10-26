@@ -83,7 +83,7 @@ class SingleRecipeView(APIView):
         recipe.recipe_ingredients.set(recipe_ingredients)
         recipe.customers_who_save.set([customer])
 
-        return HttpResponse(status=201)
+        return JsonResponse(status=201)
 
     def delete(self, request, format=None):
         try:
