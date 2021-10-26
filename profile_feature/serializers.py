@@ -3,11 +3,11 @@ from django.contrib.auth.password_validation import validate_password
 
 
 class EditSerializer(serializers.Serializer):
-    first_name = serializers.CharField(max_length=100, allow_blank=True)
-    last_name = serializers.CharField(max_length=100, allow_blank=True)
-    email = serializers.CharField(max_length=100, allow_blank=True)
-    bio = serializers.CharField(max_length=100, allow_blank=True)
-    photo = serializers.ImageField(allow_blank=True)
+    first_name = serializers.CharField(max_length=100, required=False)
+    last_name = serializers.CharField(max_length=100, required=False)
+    email = serializers.CharField(max_length=100, required=False)
+    bio = serializers.CharField(max_length=100, required=False)
+    photo = serializers.ImageField(required=False)
 
     def update(self, instance, validated_data):
         instance.user.first_name = validated_data.get(
