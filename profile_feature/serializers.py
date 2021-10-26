@@ -7,7 +7,7 @@ class EditSerializer(serializers.Serializer):
     last_name = serializers.CharField(max_length=100)
     email = serializers.CharField(max_length=100)
     bio = serializers.CharField(max_length=100, allow_blank=True)
-    photo = serializers.ImageField(default='profilePic/GDR.PNG')
+    photo = serializers.ImageField()
 
     def update(self, instance, validated_data):
         instance.user.first_name = validated_data.get(
