@@ -20,6 +20,6 @@ class RegisterView(APIView):
             except IntegrityError:
                 return JsonResponse(data={"error": "UsernameDuplicateError"}, status=400)
 
-            return JsonResponse(status=201)
+            return JsonResponse({"status": "Created"}, status=201)
 
         return JsonResponse(serializer.errors, status=400)

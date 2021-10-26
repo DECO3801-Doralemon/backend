@@ -83,13 +83,13 @@ class SingleRecipeView(APIView):
         recipe.recipe_ingredients.set(recipe_ingredients)
         recipe.customers_who_save.set([customer])
 
-        return JsonResponse(status=201)
+        return JsonResponse({"status": "Created"}, status=201)
 
     def delete(self, request, format=None):
         try:
             recipe_id = int(request.POST.get('recipe_id'))
             Recipe.objects.get(id=recipe_id).delete()
 
-            return JsonResponse(status=200)
+            return JsonResponse({"status": "OK"}, status=200)
         except ValueError:
             return JsonResponse({'error': "Invalid ID value"}, status=400)
