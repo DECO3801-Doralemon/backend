@@ -125,7 +125,7 @@ class PantryStorageView(StorageView):
 
     def post(self, request, format=None):
         (customer, ingredient, expiry_date, kg) = self.decode(request)
-        StoredIngredientInFridge.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
+        StoredIngredientInPantry.objects.create(customer=customer, ingredient=ingredient, expiry_date=expiry_date, kg=kg)
 
         return JsonResponse({"status": "Created"}, status=201)
 
