@@ -6,7 +6,7 @@ class DataMatrixDecoder:
                     return list[i]
             return None
 
-        datamatrix = datamatrix.strip()
+        dataMatrix = dataMatrix.strip()
         gs1list = [  # reminder to self add the name
             ('01', 14, False, 'Global Trade Item Number (GTIN)'),
             ('10', 20, True, 'Batch or Lot Number'),
